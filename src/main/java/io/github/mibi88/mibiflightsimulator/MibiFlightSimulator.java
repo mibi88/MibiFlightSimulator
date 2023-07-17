@@ -72,19 +72,19 @@ public class MibiFlightSimulator {
             int view_matrix_location = shaders.get_uniform_location(
                     "view_matrix");
             
-            int texture_sampler_location = shaders.get_uniform_location(
+            /*int texture_sampler_location = shaders.get_uniform_location(
                     "texture_sampler"
-            );
+            );*/
             
             TexturedModel model = new TexturedModel(vertices, indices,
                     texture_coords, "hello_world.png",
-                    TexturedModel.FILTER_MIPMAP_NEAREST,
+                    TexturedModel.FILTER_NEAREST,
                     TexturedModel.WRAP_REPEAT);
             
-            shaders.load_in_uniform_var(texture_sampler_location,
-                    model.texture_id);
+            /*shaders.load_in_uniform_var(texture_sampler_location,
+                    model.texture_id);*/
             
-            Entity entity = new Entity(model, 0f, 0f, -1f, 0f, 0f,
+            Entity entity = new Entity(model, 0f, 0f, -3f, 0f, 0f,
                     0f, 1f, shaders, transformation_matrix_location);
             
             Renderer renderer = new Renderer(window);
@@ -96,7 +96,7 @@ public class MibiFlightSimulator {
             while(!window.quit_asked()) {
                 renderer.init(window, view_matrix_location, camera, shaders);
                 
-                entity.rotate(0f, 1f, 0f);
+                //entity.rotate(0f, 1f, 0f);
                 
                 renderer.render_entity(entity);
                 window.update();

@@ -43,7 +43,7 @@ public class Renderer {
                 NEAR_PLANE, FAR_PLANE,
                 window
         );
-        GL30.glEnable(GL30.GL_TEXTURE_2D);
+        //GL30.glEnable(GL30.GL_TEXTURE_2D);
     }
     
     /**

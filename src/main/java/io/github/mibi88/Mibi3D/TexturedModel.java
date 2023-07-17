@@ -34,7 +34,7 @@ public class TexturedModel extends Model {
     public final static int FILTER_NEAREST = GL30.GL_NEAREST;
     public final static int FILTER_LINEAR = GL30.GL_LINEAR;
     public final static int FILTER_MIPMAP_NEAREST =
-            GL30.GL_NEAREST_MIPMAP_LINEAR;
+            GL30.GL_NEAREST_MIPMAP_NEAREST;
     public final static int FILTER_MIPMAP_LINEAR = GL30.GL_LINEAR_MIPMAP_LINEAR;
     
     public final static int WRAP_REPEAT = GL30.GL_REPEAT;
