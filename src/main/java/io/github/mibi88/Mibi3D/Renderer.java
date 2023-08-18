@@ -17,6 +17,8 @@
  */
 package io.github.mibi88.Mibi3D;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 
@@ -30,7 +32,19 @@ public class Renderer {
         GL30.glClearColor(1, 1, 1, 1);
     }
     
-    public void render_model(Model model) {
+    public void render_entity(Entity entity) {
+        Model model = entity.model;
+        Matrix4f transformation_matrix = Maths.create_transformation_matrix(
+                new Vector3f(entity.x, entity.y, entity.z),
+                entity.rx,
+                entity.ry,
+                entity.rz,
+                entity.scale
+        );
+        entity.shaders.load_in_uniform_var(
+                entity.transformation_matrix_location, 
+                transformation_matrix
+        );
         GL30.glBindVertexArray(model.get_vao());
         GL30.glEnableVertexAttribArray(0);
         GL30.glDrawElements(GL30.GL_TRIANGLES,

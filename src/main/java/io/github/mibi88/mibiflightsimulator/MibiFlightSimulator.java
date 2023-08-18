@@ -55,29 +55,21 @@ public class MibiFlightSimulator {
             
             shaders.finish_init();
             
-            Matrix4f transformation_matrix = Maths.create_transformation_matrix(
-                    new Vector3f(0f, 0f, 0f),
-                    0f,
-                    0f,
-                    0f,
-                    1f
-            );
+            shaders.start();
             
             int transformation_matrix_location = shaders.get_uniform_location(
                     "transformation_matrix");
             
-            shaders.load_in_uniform_var(transformation_matrix_location, 
-                   transformation_matrix);
-            
             Model model = new Model(vertices, indices);
+            Entity entity = new Entity(model, 0f, 0f, 0f, 0f, 0f,
+                    0f, 1f, shaders, transformation_matrix_location);
             
             Renderer renderer = new Renderer();
             
             while(!window.quit_asked()) {
                 renderer.init(window);
                 
-                shaders.start();
-                renderer.render_model(model);
+                renderer.render_entity(entity);
                 window.update();
                 
                 window.poll_events();
