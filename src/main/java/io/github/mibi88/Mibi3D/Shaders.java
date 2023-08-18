@@ -26,7 +26,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.system.MemoryUtil;
 
 /**
  *
@@ -39,7 +38,7 @@ public class Shaders {
     
     public Shaders(String vertex_shader_resource,
             String fragment_shader_resource) throws Exception {
-        matrix4f = MemoryUtil.memAllocFloat(16);
+        matrix4f = BufferUtils.createFloatBuffer(16);
         
         vertex_shader_id = load_shader_file(vertex_shader_resource,
                 GL30.GL_VERTEX_SHADER);

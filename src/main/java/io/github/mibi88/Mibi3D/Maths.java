@@ -17,7 +17,6 @@
  */
 package io.github.mibi88.Mibi3D;
 
-import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

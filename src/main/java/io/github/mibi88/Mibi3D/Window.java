@@ -21,7 +21,6 @@ import java.nio.IntBuffer;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.glfw.GLFW.*;
