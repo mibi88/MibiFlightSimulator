@@ -21,8 +21,10 @@ in vec3 position;
 out vec3 color;
 
 uniform mat4 transformation_matrix;
+uniform mat4 projection_matrix;
 
 void main(void) {
-    gl_Position = transformation_matrix * vec4(position, 1.0);
+    gl_Position = projection_matrix * transformation_matrix *
+                  vec4(position, 1.0);
     color = vec3(0.0, 0.0, 0.0);
 }

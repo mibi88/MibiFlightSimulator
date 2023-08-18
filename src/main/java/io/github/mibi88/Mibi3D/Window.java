@@ -17,6 +17,7 @@
  */
 package io.github.mibi88.Mibi3D;
 
+import java.nio.IntBuffer;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -87,5 +88,19 @@ public class Window {
         
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+    }
+    
+    public int[] get_window_size() {
+        int[] size = new int[2];
+        IntBuffer width_buffer = BufferUtils.createIntBuffer(1);
+        IntBuffer height_buffer = BufferUtils.createIntBuffer(1);
+        glfwGetWindowSize(
+                window_id,
+                width_buffer,
+                height_buffer
+        );
+        size[0] = width_buffer.get(0);
+        size[1] = height_buffer.get(0);
+        return size;
     }
 }
