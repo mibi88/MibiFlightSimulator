@@ -48,9 +48,14 @@ public class Renderer {
         );
     }
     
-    public void init(Window window) {
+    public void init(Window window, int view_matrix_location, Camera camera,
+            Shaders shaders) {
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(1, 1, 1, 1);
+        Matrix4f view_matrix = Maths.create_view_matrix(camera);
+        shaders.load_in_uniform_var(view_matrix_location,
+                view_matrix);
+        
     }
     
     public void render_entity(Entity entity) {

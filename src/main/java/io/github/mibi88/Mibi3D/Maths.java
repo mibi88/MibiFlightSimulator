@@ -65,4 +65,17 @@ public class Maths {
         
         return projection_matrix;
     }
+    
+    public static Matrix4f create_view_matrix(Camera camera) {
+        Vector3f translation = new Vector3f(-camera.x, -camera.y, -camera.z);
+        Matrix4f matrix = new Matrix4f()
+                .rotate((float)Math.toRadians(camera.rx),
+                        new Vector3f(1, 0, 0))
+                .rotate((float)Math.toRadians(camera.ry),
+                        new Vector3f(0, 1, 0))
+                .rotate((float)Math.toRadians(camera.rz),
+                        new Vector3f(0, 0, 1))
+                .translate(translation);
+        return matrix;
+    }
 }
