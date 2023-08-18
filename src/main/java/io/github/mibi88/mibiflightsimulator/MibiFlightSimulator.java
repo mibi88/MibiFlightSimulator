@@ -34,15 +34,22 @@ public class MibiFlightSimulator {
                     "MibiFlightSimulator");
             
             float[] vertices = {
-                -0.5f, 0.5f, 0f,//v0
-                -0.5f, -0.5f, 0f,//v1
-                0.5f, -0.5f, 0f,//v2
-                0.5f, 0.5f, 0f,//v3
+                -0.5f, 0.5f, 0f, // v0
+                -0.5f, -0.5f, 0f, // v1
+                0.5f, -0.5f, 0f, // v2
+                0.5f, 0.5f, 0f, // v3
             };
 
             int[] indices = {
-                0,1,3,//top left triangle (v0, v1, v3)
-                3,1,2//bottom right triangle (v3, v1, v2)
+                0, 1, 3, // Top left triangle (v0, v1, v3)
+                3, 1, 2 // Bottom right triangle (v3, v1, v2)
+            };
+            
+            float[] texture_coords = {
+                0f, 0f, // v0
+                0f, 1f, // v1
+                1f, 1f, // v2
+                1f, 0f // v3
             };
             
             Shaders shaders = new Shaders(
@@ -50,6 +57,7 @@ public class MibiFlightSimulator {
                     "fragment_shader.frag"
             );
             shaders.bind_attribute(0, "position");
+            shaders.bind_attribute(1, "texture_coords");
             
             shaders.finish_init();
             
@@ -64,7 +72,10 @@ public class MibiFlightSimulator {
             int view_matrix_location = shaders.get_uniform_location(
                     "view_matrix");
             
-            Model model = new Model(vertices, indices);
+            TexturedModel model = new TexturedModel(vertices, indices,
+                    texture_coords, "hello_world.png",
+                    TexturedModel.FILTER_NEAREST);
+            
             Entity entity = new Entity(model, 0f, 0f, -1f, 0f, 0f,
                     0f, 1f, shaders, transformation_matrix_location);
             

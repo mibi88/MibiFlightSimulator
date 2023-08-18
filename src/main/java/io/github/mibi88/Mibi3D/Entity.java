@@ -22,15 +22,15 @@ package io.github.mibi88.Mibi3D;
  * @author mibi88
  */
 public class Entity {
-    public Model model;
+    public TexturedModel model;
     public float x, y, z;
     public float rx, ry, rz;
     public float scale;
     public Shaders shaders;
     public int transformation_matrix_location;
     
-    public Entity(Model model, float x, float y, float z, float rx, float ry,
-            float rz, float scale, Shaders shaders,
+    public Entity(TexturedModel model, float x, float y, float z, float rx,
+            float ry, float rz, float scale, Shaders shaders,
             int transformation_matrix_location) {
         this.model = model;
         this.x = x;

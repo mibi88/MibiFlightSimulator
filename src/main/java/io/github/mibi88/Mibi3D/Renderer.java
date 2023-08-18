@@ -59,7 +59,7 @@ public class Renderer {
     }
     
     public void render_entity(Entity entity) {
-        Model model = entity.model;
+        TexturedModel model = entity.model;
         Matrix4f transformation_matrix = Maths.create_transformation_matrix(
                 new Vector3f(entity.x, entity.y, entity.z),
                 entity.rx,
@@ -75,8 +75,14 @@ public class Renderer {
         
         GL30.glBindVertexArray(model.get_vao());
         GL30.glEnableVertexAttribArray(0);
+        GL30.glEnableVertexAttribArray(1);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+        model.bind_texture();
         GL30.glDrawElements(GL30.GL_TRIANGLES,
                 model.get_vertices_amount(), GL30.GL_UNSIGNED_INT,
                 0);
+        model.unbind_texture();
+        GL30.glDisableVertexAttribArray(0);
+        GL30.glDisableVertexAttribArray(1);
     }
 }

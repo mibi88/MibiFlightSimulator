@@ -29,9 +29,9 @@ import org.lwjgl.BufferUtils;
  * @author mibi88
  */
 public class Model {
-    private final int vao, vertices_amount;
-    private ArrayList<Integer> vbo_list;
-    public Model(float[] vertices, int[] indices) {
+    protected final int vao, vertices_amount;
+    protected ArrayList<Integer> vbo_list;
+    public Model(float[] vertices, int[] indices, float[] texture_coords) {
         // Initialize the VBO ArrayList
         vbo_list = new ArrayList<Integer>();
         // Create the VAO
@@ -45,6 +45,9 @@ public class Model {
         // Load the indices into a VBO
         load_indices(indices);
         
+        // Load the texture coordinates into a VBO
+        load_texture_coords(texture_coords);
+        
         // Unbind the VAO
         GL30.glBindVertexArray(0);
     }
@@ -54,8 +57,20 @@ public class Model {
         int vbo = create_vbo(GL30.GL_ARRAY_BUFFER);
         
         // Put the data in the VBO
-        load_in_vbo(vbo, 0, GL30.GL_ARRAY_BUFFER, vertices,
-                true);
+        load_in_vbo(vbo, 0, GL30.GL_ARRAY_BUFFER, 3,
+                vertices, true);
+        
+        // Unbind the VBO
+        unbind_vbo(GL30.GL_ARRAY_BUFFER);
+    }
+    
+    private void load_texture_coords(float[] texture_coords) {
+        // Create the VBO that will contain the vertices
+        int vbo = create_vbo(GL30.GL_ARRAY_BUFFER);
+        
+        // Put the data in the VBO
+        load_in_vbo(vbo, 1, GL30.GL_ARRAY_BUFFER, 3,
+                texture_coords, true);
         
         // Unbind the VBO
         unbind_vbo(GL30.GL_ARRAY_BUFFER);
@@ -65,8 +80,8 @@ public class Model {
         int vbo = create_vbo(GL30.GL_ELEMENT_ARRAY_BUFFER);
         
         // Put the data in the VBO
-        load_in_vbo(vbo, GL30.GL_ELEMENT_ARRAY_BUFFER, indices,
-                false);
+        load_in_vbo(vbo, 0, GL30.GL_ELEMENT_ARRAY_BUFFER,
+                3, indices, false);
     }
     
     private int create_vbo(int type) {
@@ -99,8 +114,8 @@ public class Model {
         return buffer;
     }
     
-    private void load_in_vbo(int vbo_n, int pos, int type, float[] data,
-            boolean attrib_pointer) {
+    private void load_in_vbo(int vbo_n, int pos, int type, int coord_size,
+            float[] data, boolean attrib_pointer) {
         FloatBuffer buffer = convert_to_buffer(data);
         
         GL30.glBufferData(
@@ -114,8 +129,8 @@ public class Model {
         }
     }
     
-    private void load_in_vbo(int vbo_n, int type, int[] data,
-            boolean attrib_pointer) {
+    private void load_in_vbo(int vbo_n, int pos, int type, int coord_size,
+            int[] data, boolean attrib_pointer) {
         IntBuffer buffer = convert_to_buffer(data);
         
         GL30.glBufferData(
@@ -124,7 +139,7 @@ public class Model {
                 GL30.GL_STATIC_DRAW
         );
         if(attrib_pointer) {
-            GL30.glVertexAttribPointer(vbo_n, 3,
+            GL30.glVertexAttribPointer(pos, coord_size,
                     GL30.GL_FLOAT, false, 0, 0);
         }
     }
