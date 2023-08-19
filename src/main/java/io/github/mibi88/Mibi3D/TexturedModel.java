@@ -82,6 +82,8 @@ public class TexturedModel extends Model {
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
+        
+        STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer image = STBImage.stbi_load_from_memory(image_data,
                 width, height, channels, 4);
         
@@ -97,6 +99,7 @@ public class TexturedModel extends Model {
                 GL30.GL_RGBA, width.get(0),
                 height.get(0), 0, GL30.GL_RGBA,
                 GL30.GL_UNSIGNED_BYTE, image);
+        GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
         
         STBImage.stbi_image_free(image);
         

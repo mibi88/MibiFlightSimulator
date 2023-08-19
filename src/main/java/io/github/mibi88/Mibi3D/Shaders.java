@@ -71,6 +71,10 @@ public class Shaders {
         GL30.glUniform1f(location, item ? 1f : 0f);
     }
     
+    public void load_in_uniform_var(int location, int item) {
+        GL30.glUniform1i(location, item);
+    }
+    
     public void load_in_uniform_var(int location, Matrix4f item) {
         item.get(matrix4f);
         GL30.glUniformMatrix4fv(location, false, matrix4f);
