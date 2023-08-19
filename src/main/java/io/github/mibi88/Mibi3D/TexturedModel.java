@@ -118,10 +118,7 @@ public class TexturedModel extends Model {
     
     @Override
     public void free() {
-        GL30.glDeleteVertexArrays(super.vao);
-        for(int vbo:super.vbo_list) {
-            GL30.glDeleteBuffers(vbo);
-        }
+        super.free();
         for(int texture:texture_list) {
             GL30.glDeleteTextures(texture);
         }

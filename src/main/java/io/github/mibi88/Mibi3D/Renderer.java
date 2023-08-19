@@ -32,6 +32,11 @@ public class Renderer {
     
     Matrix4f projection_matrix;
     
+    /**
+     * Initializes the renderer by creating the projection matrix used when
+     * rendering the 3D scene.
+     * @param window
+     */
     public Renderer(Window window) {
         projection_matrix = Maths.create_projection_matrix(
                 FOV,
@@ -40,6 +45,16 @@ public class Renderer {
         );
     }
     
+    /**
+     * Load the projection matrix to a uniform variable to be accessed by the
+     * shader.
+     * 
+     * This method needs to be called after loading the shaders.
+     * 
+     * @param projection_matrix_location The location of the uniform variable.
+     * Get it by using the Shaders.get_uniform_location method.
+     * @param shaders The shaders to load the matrix as a uniform variable in.
+     */
     public void load_projection_matrix(int projection_matrix_location,
             Shaders shaders) {
         shaders.load_in_uniform_var(
@@ -48,6 +63,20 @@ public class Renderer {
         );
     }
     
+    /**
+     * Call this method before rendering to prepare the Renderer.
+     * 
+     * This method loads the view matrix that adapts the positions of the
+     * vertices to the position of the camera, and clears the glfw window.
+     * 
+     * @param window The window to use the renderer on.
+     * @param view_matrix_location The location of the uniform variable that
+     * will contain the view matrix.
+     * @param camera The camera object to create the view matrix from.
+     * @param shaders The shader object that will be used to load the view
+     * matrix as a uniform variable to the shaders with the
+     * Shaders.get_uniform_location method.
+     */
     public void init(Window window, int view_matrix_location, Camera camera,
             Shaders shaders) {
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
@@ -58,6 +87,11 @@ public class Renderer {
         
     }
     
+    /**
+     * Render a 3D model in the 3D scene
+     * 
+     * @param entity The entity to draw on screen.
+     */
     public void render_entity(Entity entity) {
         TexturedModel model = entity.model;
         Matrix4f transformation_matrix = Maths.create_transformation_matrix(
