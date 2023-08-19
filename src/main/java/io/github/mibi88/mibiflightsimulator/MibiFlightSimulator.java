@@ -74,7 +74,8 @@ public class MibiFlightSimulator {
             
             TexturedModel model = new TexturedModel(vertices, indices,
                     texture_coords, "hello_world.png",
-                    TexturedModel.FILTER_NEAREST);
+                    TexturedModel.FILTER_NEAREST,
+                    TexturedModel.WRAP_REPEAT);
             
             Entity entity = new Entity(model, 0f, 0f, -1f, 0f, 0f,
                     0f, 1f, shaders, transformation_matrix_location);

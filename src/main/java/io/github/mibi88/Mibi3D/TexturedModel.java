@@ -20,11 +20,13 @@ package io.github.mibi88.Mibi3D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.stb.STBImage;
 
 /**
  *
@@ -35,61 +37,73 @@ public class TexturedModel extends Model {
     public final static int FILTER_NEAREST = GL30.GL_NEAREST;
     public final static int FILTER_LINEAR = GL30.GL_LINEAR;
     
-    private ArrayList<Integer> texture_list;
+    public final static int WRAP_REPEAT = GL30.GL_REPEAT;
+    public final static int WRAP_MIRRORED_REPEAT = GL30.GL_MIRRORED_REPEAT;
+    public final static int WRAP_CLAMP_TO_EDGE = GL30.GL_CLAMP_TO_EDGE;
+    public final static int WRAP_CLAMP_TO_BORDER = GL30.GL_CLAMP_TO_BORDER;
+    
+    private final ArrayList<Integer> texture_list;
     
     public TexturedModel(float[] vertices, int[] indices,
-            float[] texture_coords, String texture_file, int texture_filter)
-            throws Exception {
+            float[] texture_coords, String texture_file, int texture_filter,
+            int texture_wrap) throws Exception {
         super(vertices, indices, texture_coords);
         texture_list = new ArrayList<Integer>();
-        texture_id = load_texture(texture_file, texture_filter);
+        texture_id = load_texture(texture_file, texture_filter,
+                texture_wrap);
     }
     
-    public int load_texture(String file_name, int filter) throws Exception {
-        int data[];
+    private int load_texture(String file_name, int filter, int wrap)
+            throws Exception {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 file_name
         );
-        
-        BufferedImage image = ImageIO.read(stream);
-        
-        int width = image.getWidth(), height = image.getHeight();
-        int size = width*height;
-        
-        int[] pixels = new int[size];
-        
-        image.getRGB(0, 0, width, height, pixels,
-                0, width);
-        
-        data = new int[size];
-        
-        for(int i=0;i<size;i++) {
-            int r = (pixels[i]&0xff0000)>>16;
-            int g = (pixels[i]&0xff00)>>8;
-            int b = (pixels[i]&0xff);
-            int a = (pixels[i]&0xff000000)>>24;
-            
-            data[i] = a<<24|b<<16|g<<8|r;
-        }
+        byte[] image_data_bytes = stream.readAllBytes();
+        ByteBuffer image_data = BufferUtils.createByteBuffer(
+                image_data_bytes.length
+        );
+        image_data.put(image_data_bytes);
+        image_data.flip();
         
         int id = GL30.glGenTextures();
+        
+        // Bind the texture
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, id);
         
         GL30.glTexParameteri(GL30.GL_TEXTURE_2D,
                 GL30.GL_TEXTURE_MIN_FILTER, filter);
         GL30.glTexParameteri(GL30.GL_TEXTURE_2D,
                 GL30.GL_TEXTURE_MAG_FILTER, filter);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D,
+                GL30.GL_TEXTURE_WRAP_S, wrap);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D,
+                GL30.GL_TEXTURE_WRAP_T, wrap);
         
-        IntBuffer buffer = BufferUtils.createIntBuffer(data.length*4);
-        buffer.put(data);
-        buffer.flip();
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer channels = BufferUtils.createIntBuffer(1);
+        ByteBuffer image = STBImage.stbi_load_from_memory(image_data,
+                width, height, channels, 4);
+        
+        System.out.printf("Image properties: w=%d, h=%d, channels=%d\n",
+                width.get(0), height.get(0),
+                channels.get(0));
+        
+        if(image == null) {
+            throw new Exception("Failed to load image!");
+        }
         
         GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0,
-                GL30.GL_RGBA, width, height, 0,
-                GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, buffer);
+                GL30.GL_RGBA, width.get(0),
+                height.get(0), 0, GL30.GL_RGBA,
+                GL30.GL_UNSIGNED_BYTE, image);
         
-        GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
+        STBImage.stbi_image_free(image);
         
         texture_list.add(id);
+        
+        // Unbind the texture
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
         
         return id;
     }
