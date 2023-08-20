@@ -78,7 +78,7 @@ public class MibiFlightSimulator {
             
             TexturedModel model = new TexturedModel(vertices, indices,
                     texture_coords, "hello_world.png",
-                    TexturedModel.FILTER_NEAREST,
+                    TexturedModel.FILTER_MIPMAP_NEAREST,
                     TexturedModel.WRAP_REPEAT);
             
             shaders.load_in_uniform_var(texture_sampler_location,

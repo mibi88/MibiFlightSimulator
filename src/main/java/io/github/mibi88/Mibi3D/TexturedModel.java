@@ -17,13 +17,10 @@
  */
 package io.github.mibi88.Mibi3D;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
@@ -36,6 +33,9 @@ public class TexturedModel extends Model {
     public int texture_id;
     public final static int FILTER_NEAREST = GL30.GL_NEAREST;
     public final static int FILTER_LINEAR = GL30.GL_LINEAR;
+    public final static int FILTER_MIPMAP_NEAREST =
+            GL30.GL_NEAREST_MIPMAP_LINEAR;
+    public final static int FILTER_MIPMAP_LINEAR = GL30.GL_LINEAR_MIPMAP_LINEAR;
     
     public final static int WRAP_REPEAT = GL30.GL_REPEAT;
     public final static int WRAP_MIRRORED_REPEAT = GL30.GL_MIRRORED_REPEAT;
