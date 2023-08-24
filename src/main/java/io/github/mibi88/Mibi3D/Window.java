@@ -52,7 +52,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL30.GL_TRUE);
         
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        
+                
         window_id = glfwCreateWindow(width, height, title,
                 NULL, NULL);
         if(window_id == NULL) {
@@ -71,8 +71,10 @@ public class Window {
         
         glfwSetWindowTitle(window_id , window_title);
         
-        glfwSwapInterval(1);
+        glfwSwapInterval(1); // V-sync enabled.
         glfwShowWindow(window_id);
+        
+        GL30.glEnable(GL30.GL_DEPTH_TEST);
     }
     
     public void update() {
