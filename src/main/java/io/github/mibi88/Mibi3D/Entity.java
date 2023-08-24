@@ -36,9 +36,9 @@ public class Entity {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.rx = rx;
-        this.ry = ry;
-        this.rz = rz;
+        this.rx = rx%360;
+        this.ry = ry%360;
+        this.rz = rz%360;
         this.scale = scale;
         this.shaders = shaders;
         this.transformation_matrix_location = transformation_matrix_location;
@@ -51,8 +51,8 @@ public class Entity {
     }
     
     public void rotate(float rx, float ry, float rz) {
-        this.rx += rx;
-        this.ry += ry;
-        this.rz += rz;
+        this.rx = (this.rx+rx)%360;
+        this.ry = (this.ry+ry)%360;
+        this.rz = (this.rz+rz)%360;
     }
 }

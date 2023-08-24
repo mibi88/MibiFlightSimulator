@@ -80,6 +80,8 @@ public class Renderer {
      */
     public void init(Window window, int view_matrix_location, Camera camera,
             Shaders shaders) {
+        //GL30.glEnable(GL30.GL_CULL_FACE);
+        //GL30.glCullFace(GL30.GL_BACK);
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(1, 1, 1, 1);
         Matrix4f view_matrix = Maths.create_view_matrix(camera);
@@ -112,7 +114,7 @@ public class Renderer {
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
-        model.bind_texture();
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
         GL30.glDrawElements(GL30.GL_TRIANGLES,
                 model.get_vertices_amount(), GL30.GL_UNSIGNED_INT,
                 0);

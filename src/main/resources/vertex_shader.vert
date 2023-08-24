@@ -19,7 +19,9 @@
 
 in vec3 position;
 in vec2 texture_coords;
+
 out vec2 pass_texture_coords;
+out vec4 color;
 
 uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
@@ -29,4 +31,5 @@ void main(void) {
     gl_Position = projection_matrix * view_matrix * transformation_matrix *
                   vec4(position, 1.0);
     pass_texture_coords = texture_coords;
+    color = vec4(0.5, 0.5, 0.5, 0.5);
 }

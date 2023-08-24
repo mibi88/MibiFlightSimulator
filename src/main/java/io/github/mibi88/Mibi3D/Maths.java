@@ -42,25 +42,12 @@ public class Maths {
     public static Matrix4f create_projection_matrix(float fov, float near_plane,
             float far_plane, Window window) {
         int[] window_size = window.get_window_size();
-        
         float aspect_ratio = window_size[0]/window_size[1];
-        float y_scale = (1f/(float)Math.tan(
-                (float)Math.toRadians(fov/2f)
-        ))*aspect_ratio;
-        float x_scale = y_scale/aspect_ratio;
-        float frustum_length = far_plane-near_plane;
         
-        Matrix4f projection_matrix = new Matrix4f();
-        projection_matrix.set(0, 0, x_scale);
-        projection_matrix.set(1, 1, y_scale);
-        projection_matrix.set(2, 2,
-                -((far_plane+near_plane)/frustum_length)
-        );
-        projection_matrix.set(2, 3, -1f);
-        projection_matrix.set(3, 2,
-                -((2*near_plane*far_plane)/frustum_length)
-        );
-        projection_matrix.set(3, 3, 0f);
+        Matrix4f projection_matrix = new Matrix4f()
+                .perspective((float)Math.toRadians(fov),
+                        aspect_ratio, near_plane,
+                        far_plane);
         
         return projection_matrix;
     }

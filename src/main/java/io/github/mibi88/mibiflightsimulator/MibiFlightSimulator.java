@@ -33,7 +33,7 @@ public class MibiFlightSimulator {
             window = new Window(640, 480,
                     "MibiFlightSimulator");
             
-            float[] vertices = {
+            /*float[] vertices = {
                 -0.5f, 0.5f, 0f, // v0
                 -0.5f, -0.5f, 0f, // v1
                 0.5f, -0.5f, 0f, // v2
@@ -50,7 +50,86 @@ public class MibiFlightSimulator {
                 0f, 1f, // v1
                 1f, 1f, // v2
                 1f, 0f // v3
-            };
+            };*/
+            
+            float[] vertices = {			
+				-0.5f,0.5f,0,	
+				-0.5f,-0.5f,0,	
+				0.5f,-0.5f,0,	
+				0.5f,0.5f,0,		
+				
+				-0.5f,0.5f,1,	
+				-0.5f,-0.5f,1,	
+				0.5f,-0.5f,1,	
+				0.5f,0.5f,1,
+				
+				0.5f,0.5f,0,	
+				0.5f,-0.5f,0,	
+				0.5f,-0.5f,1,	
+				0.5f,0.5f,1,
+				
+				-0.5f,0.5f,0,	
+				-0.5f,-0.5f,0,	
+				-0.5f,-0.5f,1,	
+				-0.5f,0.5f,1,
+				
+				-0.5f,0.5f,1,
+				-0.5f,0.5f,0,
+				0.5f,0.5f,0,
+				0.5f,0.5f,1,
+				
+				-0.5f,-0.5f,1,
+				-0.5f,-0.5f,0,
+				0.5f,-0.5f,0,
+				0.5f,-0.5f,1
+				
+		};
+		
+		float[] texture_coords = {
+				
+				0,0,
+				0,1,
+				1,1,
+				1,0,			
+				0,0,
+				0,1,
+				1,1,
+				1,0,			
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0,
+				0,0,
+				0,1,
+				1,1,
+				1,0
+
+				
+		};
+		
+		int[] indices = {
+				0,1,3,	
+				3,1,2,	
+				4,5,7,
+				7,5,6,
+				8,9,11,
+				11,9,10,
+				12,13,15,
+				15,13,14,	
+				16,17,19,
+				19,17,18,
+				20,21,23,
+				23,21,22
+
+		};
             
             Shaders shaders = new Shaders(
                     "vertex_shader.vert",
@@ -96,7 +175,7 @@ public class MibiFlightSimulator {
             while(!window.quit_asked()) {
                 renderer.init(window, view_matrix_location, camera, shaders);
                 
-                //entity.rotate(0f, 1f, 0f);
+                entity.rotate(0f, 1f, 0f);
                 
                 renderer.render_entity(entity);
                 window.update();

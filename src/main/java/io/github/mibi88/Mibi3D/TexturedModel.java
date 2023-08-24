@@ -83,7 +83,7 @@ public class TexturedModel extends Model {
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
         
-        STBImage.stbi_set_flip_vertically_on_load(true);
+        //STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer image = STBImage.stbi_load_from_memory(image_data,
                 width, height, channels, 4);
         

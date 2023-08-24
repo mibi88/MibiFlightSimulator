@@ -69,7 +69,7 @@ public class Model {
         int vbo = create_vbo(GL30.GL_ARRAY_BUFFER);
         
         // Put the data in the VBO
-        load_in_vbo(vbo, 1, GL30.GL_ARRAY_BUFFER, 3,
+        load_in_vbo(vbo, 1, GL30.GL_ARRAY_BUFFER, 2,
                 texture_coords, true);
         
         // Unbind the VBO
@@ -124,7 +124,7 @@ public class Model {
                 GL30.GL_STATIC_DRAW
         );
         if(attrib_pointer) {
-            GL30.glVertexAttribPointer(pos, 3,
+            GL30.glVertexAttribPointer(pos, coord_size,
                     GL30.GL_FLOAT, false, 0, 0);
         }
     }
