@@ -75,6 +75,9 @@ public class Window {
         glfwShowWindow(window_id);
         
         GL30.glEnable(GL30.GL_DEPTH_TEST);
+        GL30.glEnable(GL30.GL_TEXTURE_2D);
+        GL30.glEnable(GL30.GL_CULL_FACE);
+        GL30.glCullFace(GL30.GL_BACK);
     }
     
     public void update() {

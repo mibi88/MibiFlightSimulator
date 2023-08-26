@@ -43,7 +43,6 @@ public class Renderer {
                 NEAR_PLANE, FAR_PLANE,
                 window
         );
-        //GL30.glEnable(GL30.GL_TEXTURE_2D);
     }
     
     /**
@@ -80,8 +79,6 @@ public class Renderer {
      */
     public void init(Window window, int view_matrix_location, Camera camera,
             Shaders shaders) {
-        //GL30.glEnable(GL30.GL_CULL_FACE);
-        //GL30.glCullFace(GL30.GL_BACK);
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(1, 1, 1, 1);
         Matrix4f view_matrix = Maths.create_view_matrix(camera);

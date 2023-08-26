@@ -25,7 +25,7 @@ import io.github.mibi88.Mibi3D.*;
  */
 public class MibiFlightSimulator {
     static public Window window;
-
+    
     public static void main(String[] args) {
         System.out.printf("Using LWJGL %s\n",
                 org.lwjgl.Version.getVersion());
@@ -33,7 +33,7 @@ public class MibiFlightSimulator {
             window = new Window(640, 480,
                     "MibiFlightSimulator");
             
-            /*float[] vertices = {
+            float[] vertices = {
                 -0.5f, 0.5f, 0f, // v0
                 -0.5f, -0.5f, 0f, // v1
                 0.5f, -0.5f, 0f, // v2
@@ -50,86 +50,7 @@ public class MibiFlightSimulator {
                 0f, 1f, // v1
                 1f, 1f, // v2
                 1f, 0f // v3
-            };*/
-            
-            float[] vertices = {			
-				-0.5f,0.5f,0,	
-				-0.5f,-0.5f,0,	
-				0.5f,-0.5f,0,	
-				0.5f,0.5f,0,		
-				
-				-0.5f,0.5f,1,	
-				-0.5f,-0.5f,1,	
-				0.5f,-0.5f,1,	
-				0.5f,0.5f,1,
-				
-				0.5f,0.5f,0,	
-				0.5f,-0.5f,0,	
-				0.5f,-0.5f,1,	
-				0.5f,0.5f,1,
-				
-				-0.5f,0.5f,0,	
-				-0.5f,-0.5f,0,	
-				-0.5f,-0.5f,1,	
-				-0.5f,0.5f,1,
-				
-				-0.5f,0.5f,1,
-				-0.5f,0.5f,0,
-				0.5f,0.5f,0,
-				0.5f,0.5f,1,
-				
-				-0.5f,-0.5f,1,
-				-0.5f,-0.5f,0,
-				0.5f,-0.5f,0,
-				0.5f,-0.5f,1
-				
-		};
-		
-		float[] texture_coords = {
-				
-				0,0,
-				0,1,
-				1,1,
-				1,0,			
-				0,0,
-				0,1,
-				1,1,
-				1,0,			
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0,
-				0,0,
-				0,1,
-				1,1,
-				1,0
-
-				
-		};
-		
-		int[] indices = {
-				0,1,3,	
-				3,1,2,	
-				4,5,7,
-				7,5,6,
-				8,9,11,
-				11,9,10,
-				12,13,15,
-				15,13,14,	
-				16,17,19,
-				19,17,18,
-				20,21,23,
-				23,21,22
-
-		};
+            };
             
             Shaders shaders = new Shaders(
                     "vertex_shader.vert",
@@ -155,15 +76,18 @@ public class MibiFlightSimulator {
                     "texture_sampler"
             );*/
             
-            TexturedModel model = new TexturedModel(vertices, indices,
-                    texture_coords, "hello_world.png",
-                    TexturedModel.FILTER_NEAREST,
-                    TexturedModel.WRAP_REPEAT);
+            OBJLoader obj_loader = new OBJLoader(
+                    "models/stall.obj",
+                    "models/stall.png");
+            TexturedModel model = OBJLoader.load_model(
+                    TexturedModel.FILTER_MIPMAP_LINEAR,
+                    TexturedModel.WRAP_REPEAT
+            );
             
             /*shaders.load_in_uniform_var(texture_sampler_location,
                     model.texture_id);*/
             
-            Entity entity = new Entity(model, 0f, 0f, -3f, 0f, 0f,
+            Entity entity = new Entity(model, 0f, -2.5f, -10f, 0f, 0f,
                     0f, 1f, shaders, transformation_matrix_location);
             
             Renderer renderer = new Renderer(window);
@@ -183,6 +107,7 @@ public class MibiFlightSimulator {
                 window.poll_events();
             }
             
+            window.destroy();
             shaders.free();
             model.free();
         } catch (Exception exception) {
