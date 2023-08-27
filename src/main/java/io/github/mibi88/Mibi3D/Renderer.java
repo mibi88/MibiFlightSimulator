@@ -95,6 +95,22 @@ public class Renderer {
         
     }
     
+    public void start_using_model(TexturedModel model) {
+        GL30.glBindVertexArray(model.get_vao());
+        GL30.glEnableVertexAttribArray(0);
+        GL30.glEnableVertexAttribArray(1);
+        GL30.glEnableVertexAttribArray(2);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
+    }
+    
+    public void stop_using_model(TexturedModel model) {
+        model.unbind_texture();
+        GL30.glDisableVertexAttribArray(0);
+        GL30.glDisableVertexAttribArray(1);
+        GL30.glDisableVertexAttribArray(2);
+    }
+    
     /**
      * Render a 3D model in the 3D scene
      * 
@@ -115,18 +131,8 @@ public class Renderer {
                 transformation_matrix
         );
         
-        GL30.glBindVertexArray(model.get_vao());
-        GL30.glEnableVertexAttribArray(0);
-        GL30.glEnableVertexAttribArray(1);
-        GL30.glEnableVertexAttribArray(2);
-        GL30.glActiveTexture(GL30.GL_TEXTURE0);
-        GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
         GL30.glDrawElements(GL30.GL_TRIANGLES,
                 model.get_vertices_amount(), GL30.GL_UNSIGNED_INT,
                 0);
-        model.unbind_texture();
-        GL30.glDisableVertexAttribArray(0);
-        GL30.glDisableVertexAttribArray(1);
-        GL30.glDisableVertexAttribArray(2);
     }
 }

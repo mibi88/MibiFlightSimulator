@@ -72,14 +72,16 @@ public class MibiFlightSimulator {
             renderer.load_projection_matrix(projection_matrix_location,
                     shaders);
             
-            Light light = new Light(0f, -2f, 0f, 1f, 1f, 1f);
-            renderer.load_light(light_position_location, light_color_location,
-                    light, shaders);
-            
             Camera camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
+            
+            renderer.start_using_model(model);
             
             while(!window.quit_asked()) {
                 renderer.init(window, view_matrix_location, camera, shaders);
+                
+                Light light = new Light(0f, -2f, 0f, 1f, 1f, 1f);
+                renderer.load_light(light_position_location, light_color_location,
+                        light, shaders);
                 
                 entity.rotate(0f, 1f, 0f);
                 
@@ -89,7 +91,10 @@ public class MibiFlightSimulator {
                 window.poll_events();
             }
             
+            renderer.stop_using_model(model);
+            
             window.destroy();
+            shaders.stop();
             shaders.free();
             model.free();
         } catch (Exception exception) {
