@@ -24,6 +24,7 @@ import java.nio.FloatBuffer;
 import java.util.stream.Collectors;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
@@ -65,6 +66,10 @@ public class Shaders {
     
     public void load_in_uniform_var(int location, Vector3f item) {
         GL30.glUniform3f(location, item.x, item.y, item.z);
+    }
+    
+    public void load_in_uniform_var(int location, Vector4f item) {
+        GL30.glUniform4f(location, item.x, item.y, item.z, item.w);
     }
     
     public void load_in_uniform_var(int location, boolean item) {

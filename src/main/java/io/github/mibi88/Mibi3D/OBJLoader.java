@@ -139,7 +139,7 @@ public class OBJLoader {
             );
         }
         
-        return new TexturedModel(vertices, indices, texture_coords,
+        return new TexturedModel(vertices, indices, normals, texture_coords,
                 texture_file_name, texture_filter, texture_wrap);
     }
     

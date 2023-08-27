@@ -63,6 +63,14 @@ public class Renderer {
         );
     }
     
+    public void load_light(int light_position_location,
+            int light_color_location, Light light, Shaders shaders) {
+        shaders.load_in_uniform_var(light_position_location,
+                new Vector3f(light.x, light.y, light.z));
+        shaders.load_in_uniform_var(light_color_location,
+                new Vector3f(light.r, light.g, light.b));
+    }
+    
     /**
      * Call this method before rendering to prepare the Renderer.
      * 
@@ -110,6 +118,7 @@ public class Renderer {
         GL30.glBindVertexArray(model.get_vao());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
+        GL30.glEnableVertexAttribArray(2);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
         GL30.glDrawElements(GL30.GL_TRIANGLES,
@@ -118,5 +127,6 @@ public class Renderer {
         model.unbind_texture();
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
+        GL30.glDisableVertexAttribArray(2);
     }
 }

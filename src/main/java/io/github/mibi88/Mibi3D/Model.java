@@ -31,7 +31,8 @@ import org.lwjgl.BufferUtils;
 public class Model {
     protected final int vao, vertices_amount;
     protected ArrayList<Integer> vbo_list;
-    public Model(float[] vertices, int[] indices, float[] texture_coords) {
+    public Model(float[] vertices, int[] indices, float[] normals,
+            float[] texture_coords) {
         // Initialize the VBO ArrayList
         vbo_list = new ArrayList<Integer>();
         // Create the VAO
@@ -47,6 +48,9 @@ public class Model {
         
         // Load the texture coordinates into a VBO
         load_texture_coords(texture_coords);
+        
+        // Load the normals into a VBO
+        load_normals(normals);
         
         // Unbind the VAO
         GL30.glBindVertexArray(0);
@@ -71,6 +75,18 @@ public class Model {
         // Put the data in the VBO
         load_in_vbo(vbo, 1, GL30.GL_ARRAY_BUFFER, 2,
                 texture_coords, true);
+        
+        // Unbind the VBO
+        unbind_vbo(GL30.GL_ARRAY_BUFFER);
+    }
+    
+    private void load_normals(float[] normals) {
+        // Create the VBO that will contain the vertices
+        int vbo = create_vbo(GL30.GL_ARRAY_BUFFER);
+        
+        // Put the data in the VBO
+        load_in_vbo(vbo, 2, GL30.GL_ARRAY_BUFFER, 3,
+                normals, true);
         
         // Unbind the VBO
         unbind_vbo(GL30.GL_ARRAY_BUFFER);

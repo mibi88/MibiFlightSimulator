@@ -15,29 +15,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-#version 400 core
+package io.github.mibi88.Mibi3D;
 
-in vec3 position;
-in vec2 texture_coords;
-in vec3 normal;
+/**
+ *
+ * @author mibi88
+ */
+public class Light {
+    public float x, y, z;
+    public float r, g, b;
 
-out vec2 pass_texture_coords;
-
-out vec3 normal_vector;
-out vec3 to_light_vector;
-
-uniform mat4 transformation_matrix;
-uniform mat4 projection_matrix;
-uniform mat4 view_matrix;
-
-uniform vec3 light_position;
-
-void main(void) {
-    vec4 world_position = transformation_matrix * vec4(position, 1.0);
-    
-    gl_Position = projection_matrix * view_matrix * world_position;
-    pass_texture_coords = texture_coords;
-    
-    normal_vector = (transformation_matrix * vec4(normal, 0.0)).xyz;
-    to_light_vector = light_position - world_position.xyz;
+    public Light(float x, float y, float z, float r, float g, float b) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
 }

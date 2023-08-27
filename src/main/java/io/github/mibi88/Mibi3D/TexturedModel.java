@@ -44,10 +44,10 @@ public class TexturedModel extends Model {
     
     private final ArrayList<Integer> texture_list;
     
-    public TexturedModel(float[] vertices, int[] indices,
+    public TexturedModel(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords, String texture_file, int texture_filter,
             int texture_wrap) throws Exception {
-        super(vertices, indices, texture_coords);
+        super(vertices, indices, normals, texture_coords);
         texture_list = new ArrayList<Integer>();
         texture_id = load_texture(texture_file, texture_filter,
                 texture_wrap);
