@@ -69,8 +69,8 @@ public class OBJLoader {
         line_number++;
     }
     
-    public static TexturedModel load_model(int texture_filter, int texture_wrap)
-            throws Exception {
+    public static TexturedModel load_model(int texture_filter, int texture_wrap,
+            float anisotropy_amount) throws Exception {
         
         try {
             vertices_array = new ArrayList<>();
@@ -140,7 +140,8 @@ public class OBJLoader {
         }
         
         return new TexturedModel(vertices, indices, normals, texture_coords,
-                texture_file_name, texture_filter, texture_wrap);
+                texture_file_name, texture_filter, texture_wrap,
+                anisotropy_amount);
     }
     
     private static void process_vertex(String[] vertex) {

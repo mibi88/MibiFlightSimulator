@@ -31,7 +31,7 @@ public class MibiFlightSimulator {
                 org.lwjgl.Version.getVersion());
         try {
             window = new Window(640, 480,
-                    "MibiFlightSimulator");
+                    "MibiFlightSimulator", 4);
             
             Shaders shaders = new Shaders(
                     "vertex_shader.vert",
@@ -57,15 +57,22 @@ public class MibiFlightSimulator {
             int light_color_location = shaders.get_uniform_location(
                     "light_color");
             
+            int shine_damper_location = shaders.get_uniform_location(
+                    "shine_damper");
+            int reflectivity_location = shaders.get_uniform_location(
+                    "reflectivity");
+            
             OBJLoader obj_loader = new OBJLoader(
                     "models/stall.obj",
                     "models/stall.png");
             TexturedModel model = OBJLoader.load_model(
                     TexturedModel.FILTER_MIPMAP_LINEAR,
-                    TexturedModel.WRAP_REPEAT
+                    TexturedModel.WRAP_REPEAT, 4f
             );
             
-            Entity entity = new Entity(model, 0f, -2.5f, -10f, 0f, 0f,
+            Entity entity1 = new Entity(model, 0f, -2.5f, -10f, 0f, 0f,
+                    0f, 1f, shaders, transformation_matrix_location);
+            Entity entity2 = new Entity(model, 10f, -2.5f, -20f, 0f, 0f,
                     0f, 1f, shaders, transformation_matrix_location);
             
             Renderer renderer = new Renderer(window);
@@ -80,12 +87,20 @@ public class MibiFlightSimulator {
                 renderer.init(window, view_matrix_location, camera, shaders);
                 
                 Light light = new Light(0f, -2f, 0f, 1f, 1f, 1f);
-                renderer.load_light(light_position_location, light_color_location,
-                        light, shaders);
+                renderer.load_light(light_position_location,
+                        light_color_location, light, shaders);
+                renderer.load_shine_and_reflectivity(shine_damper_location,
+                        reflectivity_location,
+                        model.shine_damper,
+                        model.reflectivity,
+                        shaders
+                );
                 
-                entity.rotate(0f, 1f, 0f);
+                entity1.rotate(0f, 1f, 0f);
+                entity2.rotate(0f, -1f, 0f);
                 
-                renderer.render_entity(entity);
+                renderer.render_entity(entity1);
+                renderer.render_entity(entity2);
                 window.update();
                 
                 window.poll_events();

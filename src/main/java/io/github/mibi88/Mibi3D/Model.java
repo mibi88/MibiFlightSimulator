@@ -31,6 +31,9 @@ import org.lwjgl.BufferUtils;
 public class Model {
     protected final int vao, vertices_amount;
     protected ArrayList<Integer> vbo_list;
+    
+    public float shine_damper = 10f, reflectivity = 1f;
+    
     public Model(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
         // Initialize the VBO ArrayList

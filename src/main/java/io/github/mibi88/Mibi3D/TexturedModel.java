@@ -22,6 +22,8 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 
@@ -46,15 +48,15 @@ public class TexturedModel extends Model {
     
     public TexturedModel(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords, String texture_file, int texture_filter,
-            int texture_wrap) throws Exception {
+            int texture_wrap, float anisotropy_amount) throws Exception {
         super(vertices, indices, normals, texture_coords);
         texture_list = new ArrayList<Integer>();
         texture_id = load_texture(texture_file, texture_filter,
-                texture_wrap);
+                texture_wrap, anisotropy_amount);
     }
     
-    private int load_texture(String file_name, int filter, int wrap)
-            throws Exception {
+    private int load_texture(String file_name, int filter, int wrap,
+            float anisotropy_amount) throws Exception {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 file_name
         );
@@ -78,6 +80,21 @@ public class TexturedModel extends Model {
                 GL30.GL_TEXTURE_WRAP_S, wrap);
         GL30.glTexParameteri(GL30.GL_TEXTURE_2D,
                 GL30.GL_TEXTURE_WRAP_T, wrap);
+        
+        float max_anisotropy_amount = GL30.glGetFloat(
+            EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
+        );
+        if(GL.getCapabilities().GL_EXT_texture_filter_anisotropic &&
+                max_anisotropy_amount > 0f) {
+            // Anisotropic filtering is supported
+            float amount = Math.min(anisotropy_amount,
+                    max_anisotropy_amount);
+            GL30.glTexParameterf(GL30.GL_TEXTURE_2D,
+                EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                amount);
+        } else {
+            System.err.println("Anisotropic filtering is not supported!");
+        }
         
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);

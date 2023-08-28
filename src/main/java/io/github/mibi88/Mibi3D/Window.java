@@ -33,7 +33,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class Window {
     public long window_id;
-    public Window(int width, int height, String title) throws Exception {
+    public Window(int width, int height, String title, int multisample)
+            throws Exception {
         
         if(!glfwInit()) {
             throw new Exception("Unable to initialize GLFW!");
@@ -52,6 +53,8 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL30.GL_TRUE);
         
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        
+        if(multisample > 1) glfwWindowHint(GLFW_SAMPLES, multisample);
                 
         window_id = glfwCreateWindow(width, height, title,
                 NULL, NULL);
@@ -78,10 +81,26 @@ public class Window {
         GL30.glEnable(GL30.GL_TEXTURE_2D);
         GL30.glEnable(GL30.GL_CULL_FACE);
         GL30.glCullFace(GL30.GL_BACK);
+        if(multisample > 1) GL30.glEnable(GL30.GL_MULTISAMPLE);
+        
+        update_gl_viewport();
     }
     
     public void update() {
+        // TODO: update GL viewport only after resize
+        update_gl_viewport();
         GLFW.glfwSwapBuffers(window_id);
+    }
+    
+    public void update_gl_viewport() {
+        int[] window_size = get_window_size();
+        int max_size = window_size[0] > window_size[1] ?
+                window_size[0] : window_size[1];
+        
+        // I center the viewport and set it to the width or the height depending
+        // on which one is the biggest
+        GL30.glViewport((window_size[0]-max_size)/2,
+                (window_size[1]-max_size)/2, max_size, max_size);
     }
     
     public void poll_events() {

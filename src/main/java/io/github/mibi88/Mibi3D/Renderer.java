@@ -71,6 +71,15 @@ public class Renderer {
                 new Vector3f(light.r, light.g, light.b));
     }
     
+    public void load_shine_and_reflectivity(int shine_damper_location,
+            int reflectivity_location,
+            float shine_damper, float reflectivity, Shaders shaders) {
+        shaders.load_in_uniform_var(shine_damper_location,
+                shine_damper);
+        shaders.load_in_uniform_var(reflectivity_location,
+                reflectivity);
+    }
+    
     /**
      * Call this method before rendering to prepare the Renderer.
      * 

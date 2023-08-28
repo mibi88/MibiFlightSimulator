@@ -21,13 +21,18 @@ in vec2 pass_texture_coords;
 
 in vec3 normal_vector;
 in vec3 to_light_vector;
+in vec3 to_camera_vector;
 
 out vec4 out_color;
 
 uniform sampler2D texture_sampler;
 uniform vec3 light_color;
 
+uniform float shine_damper;
+uniform float reflectivity;
+
 void main(void) {
+    // Diffuse lighting
     vec3 unit_normal = normalize(normal_vector);
     vec3 unit_to_light = normalize(to_light_vector);
     
@@ -37,6 +42,19 @@ void main(void) {
     
     vec3 diffuse = brightness * light_color;
     
+    // Specular lighting
+    vec3 unit_to_camera = normalize(to_camera_vector);
+    vec3 light_direction = -unit_to_light;
+    vec3 reflected_light_direction = reflect(light_direction, unit_normal);
+    
+    float specular_factor = dot(reflected_light_direction, unit_to_camera);
+    specular_factor = max(specular_factor, 0.0);
+    
+    float damped_factor = pow(specular_factor, shine_damper);
+    
+    vec3 specular_lighting = damped_factor * reflectivity * light_color;
+    
     out_color = vec4(diffuse, 1.0) *
-            texture(texture_sampler, pass_texture_coords);
+            texture(texture_sampler, pass_texture_coords) +
+            vec4(specular_lighting, 1.0);
 }
