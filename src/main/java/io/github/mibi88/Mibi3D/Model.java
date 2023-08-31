@@ -17,24 +17,131 @@
  */
 package io.github.mibi88.Mibi3D;
 
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL30;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.Assimp;
+import static org.lwjgl.assimp.Assimp.aiProcess_Triangulate;
+import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.AIFace;
 
 /**
  *
  * @author mibi88
  */
 public class Model {
-    protected final int vao, vertices_amount;
+    protected int vao, vertices_amount;
     protected ArrayList<Integer> vbo_list;
     
-    public float shine_damper = 10f, reflectivity = 1f;
+    public float shine_damper = 10f, reflectivity = 0f;
     
     public Model(float[] vertices, int[] indices, float[] normals,
+            float[] texture_coords) {
+        init(vertices, indices, normals, texture_coords);
+    }
+    
+    public Model(String obj_file, int mesh_num) throws Exception {
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(
+                obj_file
+        );
+        byte[] file_bytes = stream.readAllBytes();
+        ByteBuffer file_data = BufferUtils.createByteBuffer(
+                file_bytes.length
+        );
+        file_data.put(file_bytes);
+        file_data.flip();
+        AIScene ai_scene = Assimp.aiImportFileFromMemory(file_data,
+                aiProcess_Triangulate, "");
+        if (ai_scene == null) {
+            throw new Exception("Error when loading model!");
+        }
+        int mesh_amount = ai_scene.mNumMeshes();
+        if(mesh_num < 0 || mesh_num >= mesh_amount) {
+            throw new Exception("Bad mesh number!");
+        }
+        PointerBuffer ai_meshes = ai_scene.mMeshes();
+        AIMesh mesh = AIMesh.create(ai_meshes.get(mesh_num));
+        
+        ArrayList<Float> vertices_array = new ArrayList<>();
+        ArrayList<Float> texture_coords_array = new ArrayList<>();
+        ArrayList<Float> normals_array = new ArrayList<>();
+        ArrayList<Integer> indices_array = new ArrayList<>();
+        
+        // Vertices
+        AIVector3D.Buffer vertices_buffer = mesh.mVertices();
+        
+        for(int i=0;i<vertices_buffer.limit();i++) {
+            AIVector3D vector = vertices_buffer.get(i);
+            
+            vertices_array.add(vector.x());
+            vertices_array.add(vector.y());
+            vertices_array.add(vector.z());
+        }
+        
+        // Texture coordinates
+        AIVector3D.Buffer texture_coords_buffer = mesh.mTextureCoords(0);
+        
+        for(int i=0;i<texture_coords_buffer.limit();i++) {
+            AIVector3D vector = texture_coords_buffer.get(i);
+            
+            texture_coords_array.add(vector.x());
+            texture_coords_array.add(1-vector.y());
+        }
+        
+        // Normals
+       AIVector3D.Buffer normals_buffer = mesh.mNormals();
+        
+        for(int i=0;i<normals_buffer.limit();i++) {
+            AIVector3D vector = normals_buffer.get(i);
+            
+            normals_array.add(vector.x());
+            normals_array.add(vector.y());
+            normals_array.add(vector.z());
+        }
+        // Indices
+        int faces_amount = mesh.mNumFaces();
+        AIFace.Buffer facesBuffer = mesh.mFaces();
+        for(int i=0;i<faces_amount;i++) {
+            AIFace face = facesBuffer.get(i);
+            if(face.mNumIndices() != 3) {
+                throw new Exception("Three indices required!");
+            }
+            IntBuffer indices = face.mIndices();
+            indices_array.add(indices.get(0));
+            indices_array.add(indices.get(1));
+            indices_array.add(indices.get(2));
+        }
+        
+        // Convert all ArrayLists to arrays
+        float[] vertices = new float[vertices_array.size()];
+        float[] texture_coords = new float[texture_coords_array.size()];
+        float[] normals = new float[normals_array.size()];
+        int[] indices = new int[indices_array.size()];
+        
+        for(int i=0;i<vertices.length;i++) {
+            vertices[i] = vertices_array.get(i);
+        }
+        for(int i=0;i<texture_coords.length;i++) {
+            texture_coords[i] = texture_coords_array.get(i);
+        }
+        for(int i=0;i<normals.length;i++) {
+            normals[i] = normals_array.get(i);
+        }
+        for(int i=0;i<indices.length;i++) {
+            indices[i] = indices_array.get(i);
+        }
+        init(vertices, indices, normals, texture_coords);
+    }
+    
+    public void init(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
         // Initialize the VBO ArrayList
         vbo_list = new ArrayList<Integer>();
@@ -186,5 +293,9 @@ public class Model {
     
     public int get_vertices_amount() {
         return vertices_amount;
+    }
+
+    private AIScene aiImportFileFromMemory(String obj_file, int aiProcess_Triangulate) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

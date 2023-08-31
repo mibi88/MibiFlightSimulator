@@ -50,7 +50,16 @@ public class TexturedModel extends Model {
             float[] texture_coords, String texture_file, int texture_filter,
             int texture_wrap, float anisotropy_amount) throws Exception {
         super(vertices, indices, normals, texture_coords);
-        texture_list = new ArrayList<Integer>();
+        texture_list = new ArrayList<>();
+        texture_id = load_texture(texture_file, texture_filter,
+                texture_wrap, anisotropy_amount);
+    }
+    
+    public TexturedModel(String obj_file, int mesh_num, String texture_file,
+            int texture_filter, int texture_wrap, float anisotropy_amount)
+            throws Exception {
+        super(obj_file, 0);
+        texture_list = new ArrayList<>();
         texture_id = load_texture(texture_file, texture_filter,
                 texture_wrap, anisotropy_amount);
     }
