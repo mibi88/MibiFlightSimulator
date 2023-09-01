@@ -76,7 +76,8 @@ public class MibiFlightSimulator {
             Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
             
             while(!window.quit_asked()) {
-                engine.clear(0.8f, 1f, 1f, 0.7f);
+                engine.init(0.8f, 1f, 1f, 0.7f,
+                        1.5f, 0.0025f);
                 
                 engine.load_light(light);
                 

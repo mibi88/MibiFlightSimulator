@@ -80,6 +80,14 @@ public class Renderer {
                 reflectivity);
     }
     
+    public void load_fog(float gradient, float density, int gradient_location,
+            int density_location, Shaders shaders) {
+        shaders.load_in_uniform_var(gradient_location,
+                gradient);
+        shaders.load_in_uniform_var(density_location,
+                density);
+    }
+    
     /**
      * Call this method before rendering to prepare the Renderer.
      * 
@@ -104,7 +112,6 @@ public class Renderer {
                 view_matrix);
         shaders.load_in_uniform_var(ambient_lighting_location,
                 ambient_lighting);
-        
     }
     
     public void start_using_model(TexturedModel model,

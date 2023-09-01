@@ -27,16 +27,22 @@ out vec3 normal_vector;
 out vec3 to_light_vector;
 out vec3 to_camera_vector;
 
+out float visibility;
+
 uniform mat4 transformation_matrix;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 
 uniform vec3 light_position;
 
+uniform float fog_gradient;
+uniform float fog_density;
+
 void main(void) {
     vec4 world_position = transformation_matrix * vec4(position, 1.0);
     
-    gl_Position = projection_matrix * view_matrix * world_position;
+    vec4 position_relative_to_camera = view_matrix * world_position;
+    gl_Position = projection_matrix * position_relative_to_camera;
     pass_texture_coords = texture_coords;
     
     normal_vector = (transformation_matrix * vec4(normal, 0.0)).xyz;
@@ -44,4 +50,9 @@ void main(void) {
     
     to_camera_vector = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz -
             world_position.xyz;
+    
+    float distance_from_camera = length(position_relative_to_camera.xyz);
+    visibility = clamp(
+            exp(-pow(distance_from_camera*fog_density, fog_gradient)),
+            0.0, 1.0);
 }

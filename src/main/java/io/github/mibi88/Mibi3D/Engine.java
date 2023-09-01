@@ -17,6 +17,8 @@
  */
 package io.github.mibi88.Mibi3D;
 
+import org.joml.Vector3f;
+
 /**
  *
  * @author mibi88
@@ -32,11 +34,17 @@ public class Engine {
     int transformation_matrix_location;
     int projection_matrix_location;
     int view_matrix_location;
+    
     int light_position_location;
     int light_color_location;
+    
     int shine_damper_location;
     int reflectivity_location;
     int ambient_lighting_location;
+    
+    int fog_gradient_location;
+    int fog_density_location;
+    int sky_color_location;
     
     public Engine() throws Exception {
         window = new Window(640, 480,
@@ -72,6 +80,13 @@ public class Engine {
                 "reflectivity");
         ambient_lighting_location = shaders.get_uniform_location(
                 "ambient_lighting");
+        
+        fog_gradient_location = shaders.get_uniform_location(
+                "fog_gradient");
+        fog_density_location = shaders.get_uniform_location(
+                "fog_density");
+        sky_color_location = shaders.get_uniform_location(
+                "sky_color");
         
         renderer = new Renderer(window);
         renderer.load_projection_matrix(projection_matrix_location, shaders);
@@ -109,9 +124,15 @@ public class Engine {
                 shaders, transformation_matrix_location);
     }
     
-    public void clear(float r, float g, float b, float ambient_lighting) {
+    public void init(float r, float g, float b, float ambient_lighting,
+            float fog_gradient, float fog_density) {
+        shaders.load_in_uniform_var(sky_color_location,
+                new Vector3f(r, g, b));
         renderer.init(window, view_matrix_location, camera, shaders,
                 r, g, b, ambient_lighting, ambient_lighting_location);
+        renderer.load_fog(fog_gradient, fog_density,
+                fog_gradient_location,
+                fog_density_location, shaders);
     }
     
     public void start_using_model(TexturedModel model) {

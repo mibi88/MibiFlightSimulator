@@ -23,6 +23,8 @@ in vec3 normal_vector;
 in vec3 to_light_vector;
 in vec3 to_camera_vector;
 
+in float visibility;
+
 out vec4 out_color;
 
 uniform sampler2D texture_sampler;
@@ -31,6 +33,8 @@ uniform vec3 light_color;
 uniform float shine_damper;
 uniform float reflectivity;
 uniform float ambient_lighting;
+
+uniform vec3 sky_color;
 
 void main(void) {
     // Diffuse lighting
@@ -58,4 +62,5 @@ void main(void) {
     out_color = vec4(diffuse, 1.0) *
             texture(texture_sampler, pass_texture_coords) +
             vec4(specular_lighting, 1.0);
+    out_color = mix(out_color, vec4(sky_color, 1.0), 1-visibility);
 }
