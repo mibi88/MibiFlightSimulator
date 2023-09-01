@@ -95,12 +95,15 @@ public class Renderer {
      * Shaders.get_uniform_location method.
      */
     public void init(Window window, int view_matrix_location, Camera camera,
-            Shaders shaders, float r, float g, float b) {
+            Shaders shaders, float r, float g, float b,
+            float ambient_lighting, int ambient_lighting_location) {
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(r, g, b, 1f);
         Matrix4f view_matrix = Maths.create_view_matrix(camera);
         shaders.load_in_uniform_var(view_matrix_location,
                 view_matrix);
+        shaders.load_in_uniform_var(ambient_lighting_location,
+                ambient_lighting);
         
     }
     

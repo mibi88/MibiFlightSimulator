@@ -18,7 +18,6 @@
 package io.github.mibi88.mibiflightsimulator;
 
 import io.github.mibi88.Mibi3D.*;
-import org.joml.Vector3f;
 
 /**
  *
@@ -42,30 +41,43 @@ public class MibiFlightSimulator {
                     TexturedModel.WRAP_REPEAT,
                     4f
             );
-            
-            TexturedModel terrain_model = Terrain.generate_terrain(
-                    1024, 1024, 16f, "models/grass_2.png"
-            );
-            
             plane.shine_damper = 5f;
             plane.reflectivity = 1f;
+            
+            TexturedModel sun_model = new TexturedModel(
+                    "models/sun.obj",
+                    0,
+                    "models/sun.png",
+                    TexturedModel.FILTER_MIPMAP_LINEAR,
+                    TexturedModel.WRAP_REPEAT,
+                    4f
+            );
+            sun_model.shine_damper = 10f;
+            sun_model.reflectivity = 1f;
+            
+            TexturedModel terrain_model = Terrain.generate_terrain(
+                    1024, 1024, 8f, "models/grass.png",
+                    -77
+            );
             
             Entity player = engine.create_entity(plane, 0f, 64f, 0f,
                     0f, 0f, 0f, 1f);
             
             Entity terrain = engine.create_entity(terrain_model,
-                    1024f*16f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
+                    1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
+            Entity sun = engine.create_entity(sun_model,
+                    0f, 70f, 0f, 0f, 0f, 0f, 1f);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             
             Camera camera = engine.get_camera();
             
             Keyboard keyboard = new Keyboard(window);
+            Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
             
             while(!window.quit_asked()) {
-                engine.clear(0.4f, 0.8f, 0.9f);
+                engine.clear(0.8f, 1f, 1f, 0.7f);
                 
-                Light light = new Light(0f, -10f, -50f, 1f, 1f, 1f);
                 engine.load_light(light);
                 
                 if(keyboard.draw_plane) {
@@ -73,6 +85,10 @@ public class MibiFlightSimulator {
                     engine.render_entity(player);
                     engine.stop_using_model();
                 }
+                
+                engine.start_using_model(sun_model);
+                engine.render_entity(sun);
+                engine.stop_using_model();
                 
                 engine.start_using_model(terrain_model);
                 engine.render_entity(terrain);
@@ -82,7 +98,7 @@ public class MibiFlightSimulator {
                 
                 window.poll_events();
                 
-                if(keyboard.keydown(113)) {
+                /*if(keyboard.keydown(113)) {
                     player.rz--;
                 }
                 if(keyboard.keydown(114)) {
@@ -93,11 +109,30 @@ public class MibiFlightSimulator {
                 }
                 if(keyboard.keydown(116)) {
                     player.rx++;
+                }*/
+                
+                if(keyboard.keydown(113)) {
+                    player.x--;
+                }
+                if(keyboard.keydown(114)) {
+                    player.x++;
+                }
+                if(keyboard.keydown(111)) {
+                    player.z--;
+                }
+                if(keyboard.keydown(116)) {
+                    player.z++;
                 }
                 
                 camera.x = player.x;
                 camera.y = player.y;
                 camera.z = player.z;
+                
+                light.x = player.x;
+                light.z = player.z;
+                
+                sun.x = player.x;
+                sun.z = player.z;
 
                 camera.rx = player.rx; // Angle of attack
                 camera.ry = player.ry;

@@ -26,24 +26,26 @@ import org.lwjgl.stb.STBPerlin;
  * @author mibi88
  */
 public class Terrain {
-    public static float[] generate_normals(float x, float y, float z) {
-        float height_left = get_height(x-1, y);
-        float height_right = get_height(x+1, y);
-        float height_up = get_height(x, y-1);
-        float height_down = get_height(x, y+1);
+    public static float[] generate_normals(float x, float y, float z,
+            int seed) {
+        float height_left = get_height(x-1, y, seed);
+        float height_right = get_height(x+1, y, seed);
+        float height_up = get_height(x, y-1, seed);
+        float height_down = get_height(x, y+1, seed);
         Vector3f normal = new Vector3f(height_left-height_right, 2f,
                 height_down-height_up);
         normal.normalize();
-        return new float[]{normal.x, normal.y, normal.z};
+        //return new float[]{normal.x, normal.y, normal.z};
+        return new float[]{0f, 1f, 0f};
     }
-    public static float get_height(float x, float y) {
+    public static float get_height(float x, float y, int seed) {
         return STBPerlin.stb_perlin_noise3_seed(x*0.1f,
                 y*0.1f,
                 0,
                 0,
                 0,
                 0,
-                -77)*64;
+                seed)*64;
     }
     
     public static void print_array(float[] array, String end) {
@@ -68,7 +70,7 @@ public class Terrain {
     }
     
     public static TexturedModel generate_terrain(int w, int h, float step,
-            String texture_file) throws Exception {
+            String texture_file, int seed) throws Exception {
         w++;
         h++;
         float[] vertices = new float[w*h*3];
@@ -78,12 +80,13 @@ public class Terrain {
         for(int y=0;y<h;y++) {
             for(int x=0;x<w;x++) {
                 vertices[(y*w+x)*3] = -x*step;
-                vertices[(y*w+x)*3+1] = get_height(x, y);
+                vertices[(y*w+x)*3+1] = get_height(x, y, seed);
                 vertices[(y*w+x)*3+2] = -y*step;
                 float[] normal = generate_normals(
                         vertices[y*w+x],
                         vertices[y*w+x+1],
-                        vertices[y*w+x+2]
+                        vertices[y*w+x+2],
+                        seed
                 );
                 normals[(y*w+x)*3] = normal[0];
                 normals[(y*w+x)*3+1] = normal[1];

@@ -30,6 +30,7 @@ uniform vec3 light_color;
 
 uniform float shine_damper;
 uniform float reflectivity;
+uniform float ambient_lighting;
 
 void main(void) {
     // Diffuse lighting
@@ -38,7 +39,7 @@ void main(void) {
     
     float normal_dot_to_light = dot(unit_normal, unit_to_light);
     
-    float brightness = max(normal_dot_to_light, 0.2);
+    float brightness = max(normal_dot_to_light, ambient_lighting);
     
     vec3 diffuse = brightness * light_color;
     

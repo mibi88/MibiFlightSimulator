@@ -36,6 +36,7 @@ public class Engine {
     int light_color_location;
     int shine_damper_location;
     int reflectivity_location;
+    int ambient_lighting_location;
     
     public Engine() throws Exception {
         window = new Window(640, 480,
@@ -69,6 +70,8 @@ public class Engine {
                 "shine_damper");
         reflectivity_location = shaders.get_uniform_location(
                 "reflectivity");
+        ambient_lighting_location = shaders.get_uniform_location(
+                "ambient_lighting");
         
         renderer = new Renderer(window);
         renderer.load_projection_matrix(projection_matrix_location, shaders);
@@ -106,9 +109,9 @@ public class Engine {
                 shaders, transformation_matrix_location);
     }
     
-    public void clear(float r, float g, float b) {
+    public void clear(float r, float g, float b, float ambient_lighting) {
         renderer.init(window, view_matrix_location, camera, shaders,
-                r, g, b);
+                r, g, b, ambient_lighting, ambient_lighting_location);
     }
     
     public void start_using_model(TexturedModel model) {
