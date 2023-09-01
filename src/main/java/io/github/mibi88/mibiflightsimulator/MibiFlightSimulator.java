@@ -18,6 +18,7 @@
 package io.github.mibi88.mibiflightsimulator;
 
 import io.github.mibi88.Mibi3D.*;
+import org.joml.Vector3f;
 
 /**
  *
@@ -30,39 +31,10 @@ public class MibiFlightSimulator {
         System.out.printf("Using LWJGL %s\n",
                 org.lwjgl.Version.getVersion());
         try {
-            window = new Window(640, 480,
-                    "MibiFlightSimulator", 4);
+            Engine engine = new Engine();
+            window = engine.get_window();
             
-            Shaders shaders = new Shaders(
-                    "vertex_shader.vert",
-                    "fragment_shader.frag"
-            );
-            shaders.bind_attribute(0, "position");
-            shaders.bind_attribute(1, "texture_coords");
-            shaders.bind_attribute(2, "normal");
-            
-            shaders.finish_init();
-            
-            shaders.start();
-            
-            int transformation_matrix_location = shaders.get_uniform_location(
-                    "transformation_matrix");
-            int projection_matrix_location = shaders.get_uniform_location(
-                    "projection_matrix");
-            int view_matrix_location = shaders.get_uniform_location(
-                    "view_matrix");
-            
-            int light_position_location = shaders.get_uniform_location(
-                    "light_position");
-            int light_color_location = shaders.get_uniform_location(
-                    "light_color");
-            
-            int shine_damper_location = shaders.get_uniform_location(
-                    "shine_damper");
-            int reflectivity_location = shaders.get_uniform_location(
-                    "reflectivity");
-            
-            TexturedModel model = new TexturedModel(
+            TexturedModel plane = new TexturedModel(
                     "models/plane.obj",
                     0,
                     "models/plane.png",
@@ -70,52 +42,71 @@ public class MibiFlightSimulator {
                     TexturedModel.WRAP_REPEAT,
                     4f
             );
-            model.shine_damper = 5f;
-            model.reflectivity = 1f;
             
-            Entity entity1 = new Entity(model, 0f, 0f, 0f, 0f, 0f,
-                    0f, 1f, shaders, transformation_matrix_location);
-            Entity entity2 = new Entity(model, 10f, -2.5f, -20f, 0f, 0f,
-                    0f, 1f, shaders, transformation_matrix_location);
-            
-            Renderer renderer = new Renderer(window);
-            renderer.load_projection_matrix(projection_matrix_location,
-                    shaders);
-            renderer.load_shine_and_reflectivity(shine_damper_location,
-                    reflectivity_location,
-                    model.shine_damper,
-                    model.reflectivity,
-                    shaders
+            TexturedModel terrain_model = Terrain.generate_terrain(
+                    1024, 1024, 16f, "models/grass_2.png"
             );
             
-            Camera camera = new Camera(0f, 0f, 10f, 0f,  0f, 0f);
+            plane.shine_damper = 5f;
+            plane.reflectivity = 1f;
             
-            renderer.start_using_model(model);
+            Entity player = engine.create_entity(plane, 0f, 64f, 0f,
+                    0f, 0f, 0f, 1f);
+            
+            Entity terrain = engine.create_entity(terrain_model,
+                    1024f*16f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
+            
+            engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
+            
+            Camera camera = engine.get_camera();
+            
+            Keyboard keyboard = new Keyboard(window);
             
             while(!window.quit_asked()) {
-                renderer.init(window, view_matrix_location, camera, shaders,
-                        0.4f, 0.8f, 0.9f);
+                engine.clear(0.4f, 0.8f, 0.9f);
                 
                 Light light = new Light(0f, -10f, -50f, 1f, 1f, 1f);
-                renderer.load_light(light_position_location,
-                        light_color_location, light, shaders);
+                engine.load_light(light);
                 
-                //entity1.rotate(0f, 1f, 0f);
-                entity2.rotate(0f, 1f, 0f);
+                if(keyboard.draw_plane) {
+                    engine.start_using_model(plane);
+                    engine.render_entity(player);
+                    engine.stop_using_model();
+                }
                 
-                renderer.render_entity(entity1);
-                renderer.render_entity(entity2);
+                engine.start_using_model(terrain_model);
+                engine.render_entity(terrain);
+                engine.stop_using_model();
+                
                 window.update();
                 
                 window.poll_events();
+                
+                if(keyboard.keydown(113)) {
+                    player.rz--;
+                }
+                if(keyboard.keydown(114)) {
+                    player.rz++;
+                }
+                if(keyboard.keydown(111)) {
+                    player.rx--;
+                }
+                if(keyboard.keydown(116)) {
+                    player.rx++;
+                }
+                
+                camera.x = player.x;
+                camera.y = player.y;
+                camera.z = player.z;
+
+                camera.rx = player.rx; // Angle of attack
+                camera.ry = player.ry;
+                camera.rz = player.rz;
             }
             
-            renderer.stop_using_model(model);
-            
-            window.destroy();
-            shaders.stop();
-            shaders.free();
-            model.free();
+            engine.destroy();
+            plane.free();
+            terrain_model.free();
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }

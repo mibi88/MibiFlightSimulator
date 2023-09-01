@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL30;
  */
 public class Renderer {
     private final float FOV = 70f;
-    private final float NEAR_PLANE = 0.1f, FAR_PLANE = 200f;
+    private final float NEAR_PLANE = 0.1f, FAR_PLANE = 1000f;
     
     Matrix4f projection_matrix;
     
@@ -104,13 +104,21 @@ public class Renderer {
         
     }
     
-    public void start_using_model(TexturedModel model) {
+    public void start_using_model(TexturedModel model,
+            int shine_damper_location, int reflectivity_location,
+            Shaders shaders) {
         GL30.glBindVertexArray(model.get_vao());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
         GL30.glEnableVertexAttribArray(2);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
+        load_shine_and_reflectivity(shine_damper_location,
+                reflectivity_location,
+                model.shine_damper,
+                model.reflectivity,
+                shaders
+        );
     }
     
     public void stop_using_model(TexturedModel model) {
