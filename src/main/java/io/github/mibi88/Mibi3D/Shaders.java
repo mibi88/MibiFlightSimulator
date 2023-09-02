@@ -73,7 +73,7 @@ public class Shaders {
     }
     
     public void load_in_uniform_var(int location, boolean item) {
-        GL30.glUniform1f(location, item ? 1f : 0f);
+        GL30.glUniform1i(location, item ? 1 : 0);
     }
     
     public void load_in_uniform_var(int location, int item) {

@@ -38,6 +38,8 @@ uniform vec3 light_position;
 uniform float fog_gradient;
 uniform float fog_density;
 
+uniform int fog;
+
 void main(void) {
     vec4 world_position = transformation_matrix * vec4(position, 1.0);
     
@@ -51,8 +53,10 @@ void main(void) {
     to_camera_vector = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz -
             world_position.xyz;
     
-    float distance_from_camera = length(position_relative_to_camera.xyz);
-    visibility = clamp(
-            exp(-pow(distance_from_camera*fog_density, fog_gradient)),
-            0.0, 1.0);
+    if(fog == 1) {
+        float distance_from_camera = length(position_relative_to_camera.xyz);
+        visibility = clamp(
+                exp(-pow(distance_from_camera*fog_density, fog_gradient)),
+                0.0, 1.0);
+    }
 }

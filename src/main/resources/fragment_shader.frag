@@ -36,6 +36,8 @@ uniform float ambient_lighting;
 
 uniform vec3 sky_color;
 
+uniform int fog;
+
 void main(void) {
     // Diffuse lighting
     vec3 unit_normal = normalize(normal_vector);
@@ -62,5 +64,7 @@ void main(void) {
     out_color = vec4(diffuse, 1.0) *
             texture(texture_sampler, pass_texture_coords) +
             vec4(specular_lighting, 1.0);
-    out_color = mix(out_color, vec4(sky_color, 1.0), 1-visibility);
+    if(fog == 1) {
+        out_color = mix(out_color, vec4(sky_color, 1.0), 1-visibility);
+    }
 }

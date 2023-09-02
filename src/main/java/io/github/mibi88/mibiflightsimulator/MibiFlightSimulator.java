@@ -30,7 +30,8 @@ public class MibiFlightSimulator {
         System.out.printf("Using LWJGL %s\n",
                 org.lwjgl.Version.getVersion());
         try {
-            Engine engine = new Engine();
+            Engine engine = new Engine(0.8f, 1f, 1f, 0.7f,
+                        1.5f, 0.0025f, true);
             window = engine.get_window();
             
             TexturedModel plane = new TexturedModel(
@@ -62,6 +63,7 @@ public class MibiFlightSimulator {
             
             Entity player = engine.create_entity(plane, 0f, 64f, 0f,
                     0f, 0f, 0f, 1f);
+            Plane movement = new Plane(player);
             
             Entity terrain = engine.create_entity(terrain_model,
                     1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
@@ -76,10 +78,10 @@ public class MibiFlightSimulator {
             Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
             
             while(!window.quit_asked()) {
-                engine.init(0.8f, 1f, 1f, 0.7f,
-                        1.5f, 0.0025f);
+                engine.init();
                 
                 engine.load_light(light);
+                engine.set_fog(keyboard.fog);
                 
                 if(keyboard.draw_plane) {
                     engine.start_using_model(plane);
@@ -99,20 +101,34 @@ public class MibiFlightSimulator {
                 
                 window.poll_events();
                 
-                /*if(keyboard.keydown(113)) {
-                    player.rz--;
+                if(keyboard.keydown(113)) {
+                    movement.rotate_left();
                 }
                 if(keyboard.keydown(114)) {
-                    player.rz++;
+                    movement.rotate_right();
                 }
                 if(keyboard.keydown(111)) {
-                    player.rx--;
+                    movement.rotate_up();
                 }
                 if(keyboard.keydown(116)) {
-                    player.rx++;
-                }*/
+                    movement.rotate_down();
+                }
+                if(keyboard.keydown(112)) {
+                    movement.speed_up();
+                }
+                if(keyboard.keydown(117)) {
+                    movement.slow_down();
+                }
                 
-                if(keyboard.keydown(113)) {
+                if(keyboard.keydown(38)) {
+                    movement.rotate_fast_left();
+                }
+                if(keyboard.keydown(39)) {
+                    movement.rotate_fast_right();
+                }
+                movement.move();
+                
+                /*if(keyboard.keydown(113)) {
                     player.x--;
                 }
                 if(keyboard.keydown(114)) {
@@ -123,7 +139,7 @@ public class MibiFlightSimulator {
                 }
                 if(keyboard.keydown(116)) {
                     player.z++;
-                }
+                }*/
                 
                 camera.x = player.x;
                 camera.y = player.y;
@@ -133,6 +149,7 @@ public class MibiFlightSimulator {
                 light.z = player.z;
                 
                 sun.x = player.x;
+                sun.y = player.y+15f;
                 sun.z = player.z;
 
                 camera.rx = player.rx; // Angle of attack

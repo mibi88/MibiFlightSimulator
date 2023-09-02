@@ -80,12 +80,15 @@ public class Renderer {
                 reflectivity);
     }
     
-    public void load_fog(float gradient, float density, int gradient_location,
-            int density_location, Shaders shaders) {
+    public void load_fog(float gradient, float density, boolean fog,
+            int gradient_location, int density_location, int fog_location,
+            Shaders shaders) {
         shaders.load_in_uniform_var(gradient_location,
                 gradient);
         shaders.load_in_uniform_var(density_location,
                 density);
+        shaders.load_in_uniform_var(fog_location,
+                fog);
     }
     
     /**

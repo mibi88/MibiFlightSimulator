@@ -44,9 +44,35 @@ public class Engine {
     
     int fog_gradient_location;
     int fog_density_location;
+    int fog_location;
     int sky_color_location;
     
-    public Engine() throws Exception {
+    float r;
+    float g;
+    float b;
+    
+    float ambient_lighting;
+    
+    
+    float fog_gradient;
+    float fog_density;
+    
+    boolean fog;
+    
+    public Engine(float r, float g, float b, float ambient_lighting,
+            float fog_gradient, float fog_density, boolean fog)
+            throws Exception {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        
+        this.ambient_lighting = ambient_lighting;
+        
+        this.fog_gradient = fog_gradient;
+        this.fog_density = fog_density;
+        
+        this.fog = fog;
+        
         window = new Window(640, 480,
                     "MibiFlightSimulator", 4);
             
@@ -85,6 +111,8 @@ public class Engine {
                 "fog_gradient");
         fog_density_location = shaders.get_uniform_location(
                 "fog_density");
+        fog_location = shaders.get_uniform_location(
+                "fog");
         sky_color_location = shaders.get_uniform_location(
                 "sky_color");
         
@@ -113,6 +141,10 @@ public class Engine {
         camera.rz = rz;
     }
     
+    public void set_fog(boolean fog) {
+        this.fog = fog;
+    }
+    
     public void load_light(Light light) {
         renderer.load_light(light_position_location,
                 light_color_location, light, shaders);
@@ -124,15 +156,14 @@ public class Engine {
                 shaders, transformation_matrix_location);
     }
     
-    public void init(float r, float g, float b, float ambient_lighting,
-            float fog_gradient, float fog_density) {
+    public void init() {
         shaders.load_in_uniform_var(sky_color_location,
                 new Vector3f(r, g, b));
         renderer.init(window, view_matrix_location, camera, shaders,
                 r, g, b, ambient_lighting, ambient_lighting_location);
-        renderer.load_fog(fog_gradient, fog_density,
+        renderer.load_fog(fog_gradient, fog_density, fog,
                 fog_gradient_location,
-                fog_density_location, shaders);
+                fog_density_location, fog_location, shaders);
     }
     
     public void start_using_model(TexturedModel model) {
