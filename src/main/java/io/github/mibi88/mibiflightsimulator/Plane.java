@@ -17,7 +17,7 @@
  */
 package io.github.mibi88.mibiflightsimulator;
 
-import io.github.mibi88.Mibi3D.Entity;
+import io.github.mibi88.Mibi3D.Camera;
 import org.joml.Vector3f;
 
 /**
@@ -25,20 +25,20 @@ import org.joml.Vector3f;
  * @author mibi88
  */
 public class Plane {
-    private Entity plane;
+    private Camera plane;
     float speed = 0f;
     float max_speed = 1f;
     float min_fly_speed = 0.5f;
     
-    float x_rot_speed = 0.05f;
-    float y_rot_speed = 0.05f;
-    float z_rot_speed = 0.05f;
+    float rx_speed = 0.05f;
+    float ry_speed = 0.05f;
+    float rz_speed = 0.05f;
     
-    float x_rot = 0f;
-    float y_rot = 0f;
-    float z_rot = 0f;
+    float rx = 0f;
+    float ry = 0f;
+    float rz = 0f;
     
-    float z_rot_mul = 1.5f;
+    float rz_mul = 3f;
     
     float acceleration = 0.1f;
     float slow_down = 0.1f;
@@ -51,7 +51,7 @@ public class Plane {
     boolean rot_y = false;
     boolean rot_z = false;
     
-    public Plane(Entity plane) {
+    public Plane(Camera plane) {
         this.plane = plane;
     }
     
@@ -66,32 +66,32 @@ public class Plane {
     }
     
     public void rotate_left() {
-        z_rot -= z_rot_speed;
+        rz -= rz_speed;
         rot_z = true;
     }
     
     public void rotate_right() {
-        z_rot += z_rot_speed;
+        rz += rz_speed;
         rot_z = true;
     }
     
     public void rotate_fast_left() {
-        y_rot -= y_rot_speed;
+        ry -= ry_speed;
         rot_y = true;
     }
     
     public void rotate_fast_right() {
-        y_rot += y_rot_speed;
+        ry += ry_speed;
         rot_y = true;
     }
     
     public void rotate_up() {
-        x_rot += x_rot_speed;
+        rx += rx_speed;
         rot_x = true;
     }
     
     public void rotate_down() {
-        x_rot -= x_rot_speed;
+        rx -= rx_speed;
         rot_x = true;
     }
     
@@ -99,33 +99,33 @@ public class Plane {
         if(!got_faster) slow_down();
         
         if(!rot_x) {
-            if(x_rot < 0f) x_rot += x_rot_speed;
-            if(x_rot > 0f) x_rot -= x_rot_speed;
+            if(rx < 0f) rx += rx_speed;
+            if(rx > 0f) rx -= rx_speed;
             
-            if(x_rot > -x_rot_speed && x_rot < x_rot_speed) x_rot = 0f;
+            if(rx > -rx_speed && rx < rx_speed) rx = 0f;
         }
         if(!rot_y) {
-            if(y_rot < 0f) y_rot += y_rot_speed;
-            if(y_rot > 0f) y_rot -= y_rot_speed;
+            if(ry < 0f) ry += ry_speed;
+            if(ry > 0f) ry -= ry_speed;
             
-            if(x_rot > -x_rot_speed && x_rot < x_rot_speed) x_rot = 0f;
+            if(rx > -rx_speed && rx < rx_speed) rx = 0f;
         }
         if(!rot_z) {
-            if(z_rot < 0f) z_rot += z_rot_speed;
-            if(z_rot > 0f) z_rot -= z_rot_speed;
+            if(rz < 0f) rz += rz_speed;
+            if(rz > 0f) rz -= rz_speed;
             
-            if(z_rot > -z_rot_speed && z_rot < x_rot_speed) z_rot = 0f;
+            if(rz > -rz_speed && rz < rx_speed) rz = 0f;
         }
         
-        plane.rx -= x_rot;
-        plane.ry += z_rot*z_rot_mul;
-        plane.ry += y_rot;
-        plane.rz -= z_rot;
+        plane.rx -= rx;
+        plane.ry += rz*rz_mul;
+        plane.ry += ry;
+        plane.rz -= rz;
         
         Vector3f direction = new Vector3f(0f, 0f, -speed);
         direction.rotateX((float)Math.toRadians(-plane.rx));
         direction.rotateY((float)Math.toRadians(-plane.ry));
-        direction.rotateY((float)Math.toRadians(plane.rz*z_rot_mul));
+        direction.rotateY((float)Math.toRadians(plane.rz));
         plane.x += direction.x;
         plane.y += direction.y;
         plane.z += direction.z;
@@ -135,5 +135,14 @@ public class Plane {
         rot_x = false;
         rot_y = false;
         rot_z = false;
+        
+        plane.rx %= 360f;
+        plane.ry %= 360f;
+        plane.rz %= 360f;
+        while(plane.rx < 0f) plane.rx = 360 - plane.rx;
+        while(plane.ry < 0f) plane.ry = 360 - plane.ry;
+        while(plane.rz < 0f) plane.rz = 360 - plane.rz;
+        
+        System.out.println(plane.rz);
     }
 }

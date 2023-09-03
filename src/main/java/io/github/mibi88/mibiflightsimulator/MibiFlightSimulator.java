@@ -63,7 +63,10 @@ public class MibiFlightSimulator {
             
             Entity player = engine.create_entity(plane, 0f, 64f, 0f,
                     0f, 0f, 0f, 1f);
-            Plane movement = new Plane(player);
+            
+            Camera camera = engine.get_camera();
+            
+            Plane movement = new Plane(camera);
             
             Entity terrain = engine.create_entity(terrain_model,
                     1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
@@ -71,8 +74,6 @@ public class MibiFlightSimulator {
                     0f, 70f, 0f, 0f, 0f, 0f, 1f);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
-            
-            Camera camera = engine.get_camera();
             
             Keyboard keyboard = new Keyboard(window);
             Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
@@ -128,33 +129,20 @@ public class MibiFlightSimulator {
                 }
                 movement.move();
                 
-                /*if(keyboard.keydown(113)) {
-                    player.x--;
-                }
-                if(keyboard.keydown(114)) {
-                    player.x++;
-                }
-                if(keyboard.keydown(111)) {
-                    player.z--;
-                }
-                if(keyboard.keydown(116)) {
-                    player.z++;
-                }*/
+                player.x = camera.x;
+                player.y = camera.y;
+                player.z = camera.z;
                 
-                camera.x = player.x;
-                camera.y = player.y;
-                camera.z = player.z;
+                light.x = camera.x;
+                light.z = camera.z;
                 
-                light.x = player.x;
-                light.z = player.z;
-                
-                sun.x = player.x;
-                sun.y = player.y+15f;
-                sun.z = player.z;
+                sun.x = camera.x;
+                sun.y = camera.y+15f;
+                sun.z = camera.z;
 
-                camera.rx = player.rx; // Angle of attack
-                camera.ry = player.ry;
-                camera.rz = player.rz;
+                player.rx = -camera.rx; // Angle of attack
+                player.ry = -camera.ry;
+                player.rz = camera.rz;
             }
             
             engine.destroy();

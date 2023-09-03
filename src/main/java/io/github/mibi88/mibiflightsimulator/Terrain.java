@@ -32,11 +32,11 @@ public class Terrain {
         float height_right = get_height(x+1, z, seed, w, h);
         float height_up = get_height(x, z-1, seed, w, h);
         float height_down = get_height(x, z+1, seed, w, h);
-        Vector3f normal = new Vector3f(height_left-height_right, 2f,
+        Vector3f normal = new Vector3f(height_left-height_right, 64f,
                 height_down-height_up);
         normal.normalize();
         //return new float[]{normal.x, normal.y, normal.z};
-        return new float[]{0f, 1f, 0f};
+        return new float[]{0, 0, 0};
     }
     public static float get_height(float x, float y, int seed, int w, int h) {
         return STBPerlin.stb_perlin_noise3_seed(x*0.1f,
@@ -83,9 +83,9 @@ public class Terrain {
                 vertices[(y*w+x)*3+1] = get_height(x, y, seed, w, h);
                 vertices[(y*w+x)*3+2] = -y*step;
                 float[] normal = generate_normals(
-                        vertices[y*w+x],
-                        vertices[y*w+x+1],
-                        vertices[y*w+x+2],
+                        vertices[(y*w+x)*3],
+                        vertices[(y*w+x)*3+1],
+                        vertices[(y*w+x)*3+2],
                         seed,
                         w, h
                 );

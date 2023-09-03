@@ -44,7 +44,6 @@ public class Keyboard {
             if(scancode == 41 && action == GLFW.GLFW_RELEASE) {
                 fog = !fog;
             }
-            System.out.println(scancode);
         });
     }
     
