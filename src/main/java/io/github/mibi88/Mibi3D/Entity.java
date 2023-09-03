@@ -29,6 +29,21 @@ public class Entity {
     public Shaders shaders;
     public int transformation_matrix_location;
     
+    /**
+     * Create a new entity of a TexturedModel
+     * 
+     * @param model The TexturedModel to create an entity from
+     * @param x
+     * @param y
+     * @param z
+     * @param rx The rotation of the entity on the X axis
+     * @param ry The rotation of the entity on the Y axis
+     * @param rz The rotation of the entity on the Z axis
+     * @param scale The scale of the entity
+     * @param shaders The shaders that will be used to render this entity
+     * @param transformation_matrix_location The location to load the
+     * transformation matrix to
+     */
     public Entity(TexturedModel model, float x, float y, float z, float rx,
             float ry, float rz, float scale, Shaders shaders,
             int transformation_matrix_location) {
@@ -44,12 +59,26 @@ public class Entity {
         this.transformation_matrix_location = transformation_matrix_location;
     }
     
+    /**
+     * Move the entity
+     * 
+     * @param x
+     * @param y
+     * @param z
+     */
     public void move(float x, float y, float z) {
         this.x += x;
         this.y += y;
         this.z += z;
     }
     
+    /**
+     * Rotate the entity
+     * 
+     * @param rx
+     * @param ry
+     * @param rz
+     */
     public void rotate(float rx, float ry, float rz) {
         this.rx = (this.rx+rx)%360;
         this.ry = (this.ry+ry)%360;

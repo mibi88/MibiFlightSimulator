@@ -25,6 +25,17 @@ import org.joml.Vector3f;
  * @author mibi88
  */
 public class Maths {
+
+    /**
+     * Create a transformation matrix
+     * 
+     * @param translation
+     * @param rx The rotation on the X axis
+     * @param ry The rotation on the Y axis
+     * @param rz The rotation on the Z axis
+     * @param scale The scale
+     * @return The transformation matrix, a Matrix4f
+     */
     public static Matrix4f create_transformation_matrix(Vector3f translation,
             float rx, float ry, float rz, float scale) {
         Matrix4f matrix = new Matrix4f()
@@ -39,6 +50,15 @@ public class Maths {
         return matrix;
     }
     
+    /**
+     * Create a perspective projection matrix
+     * 
+     * @param fov The field of view
+     * @param near_plane The distance of the near plane
+     * @param far_plane The distance of the far plane
+     * @param window The Window object that will be used to draw the scene
+     * @return The projection matrix, a Matrix4f
+     */
     public static Matrix4f create_projection_matrix(float fov, float near_plane,
             float far_plane, Window window) {
         int[] window_size = window.get_window_size();
@@ -52,6 +72,12 @@ public class Maths {
         return projection_matrix;
     }
     
+    /**
+     * Create a view matrix from a Camera object
+     * 
+     * @param camera The Camera object
+     * @return The view matrix, a Matrix4f
+     */
     public static Matrix4f create_view_matrix(Camera camera) {
         Vector3f translation = new Vector3f(-camera.x, -camera.y, -camera.z);
         Matrix4f matrix = new Matrix4f()

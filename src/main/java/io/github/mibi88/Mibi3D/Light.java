@@ -25,6 +25,19 @@ public class Light {
     public float x, y, z;
     public float r, g, b;
 
+    /**
+     * Create a new light
+     * 
+     * @param x
+     * @param y
+     * @param z
+     * @param r The red component of the color of the light, a float between 0
+     * and 1
+     * @param g The green component of the color of the light, a float between 0
+     * and 1
+     * @param b The blue component of the color of the light, a float between 0
+     * and 1
+     */
     public Light(float x, float y, float z, float r, float g, float b) {
         this.x = x;
         this.y = y;

@@ -43,11 +43,26 @@ public class Model {
     
     public float shine_damper = 10f, reflectivity = 0f;
     
+    /**
+     * Load a model
+     * 
+     * @param vertices An array of vertices
+     * @param indices The position of the vertex to use in the array of vertices
+     * @param normals The normals of the vertices
+     * @param texture_coords The texture coordinates for each vertex
+     */
     public Model(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
         init(vertices, indices, normals, texture_coords);
     }
     
+    /**
+     * Load a model
+     * 
+     * @param obj_file The obj file to load
+     * @param mesh_num The number of the mesh to load
+     * @throws Exception
+     */
     public Model(String obj_file, int mesh_num) throws Exception {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 obj_file
@@ -141,7 +156,15 @@ public class Model {
         init(vertices, indices, normals, texture_coords);
     }
     
-    public void init(float[] vertices, int[] indices, float[] normals,
+    /**
+     * Load the model from data in arrays
+     * 
+     * @param vertices The array of vertices
+     * @param indices The array of indices of the vertices
+     * @param normals The array of normals
+     * @param texture_coords The array of texture coordinates
+     */
+    private void init(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
         // Initialize the VBO ArrayList
         vbo_list = new ArrayList<Integer>();
@@ -293,9 +316,5 @@ public class Model {
     
     public int get_vertices_amount() {
         return vertices_amount;
-    }
-
-    private AIScene aiImportFileFromMemory(String obj_file, int aiProcess_Triangulate) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

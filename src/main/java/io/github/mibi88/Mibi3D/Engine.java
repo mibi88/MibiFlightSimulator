@@ -59,6 +59,19 @@ public class Engine {
     
     boolean fog;
     
+    /**
+     * Initializes the 3D engine
+     * 
+     * @param r The sky color red component, a float between 0 and 1
+     * @param g The sky color green component, a float between 0 and 1
+     * @param b The sky color blue component, a float between 0 and 1
+     * @param ambient_lighting The amount of ambient lighting, a float between
+     * 0 and 1
+     * @param fog_gradient The size of the gradient of the fog
+     * @param fog_density The density of the fog
+     * @param fog A boolean to enable or disable fog
+     * @throws Exception
+     */
     public Engine(float r, float g, float b, float ambient_lighting,
             float fog_gradient, float fog_density, boolean fog)
             throws Exception {
@@ -122,14 +135,34 @@ public class Engine {
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
     }
     
+    /**
+     * Get the Camera object used by the engine
+     * 
+     * @return The Camera object
+     */
     public Camera get_camera() {
         return camera;
     }
     
+    /**
+     * Get the Window object used by the engine
+     * 
+     * @return The Window object
+     */
     public Window get_window() {
         return window;
     }
     
+    /**
+     * Set the position of the camera
+     * 
+     * @param x
+     * @param y
+     * @param z
+     * @param rx
+     * @param ry
+     * @param rz
+     */
     public void set_camera_pos(float x, float y, float z, float rx, float ry,
             float rz) {
         camera.x = x;
@@ -141,21 +174,48 @@ public class Engine {
         camera.rz = rz;
     }
     
+    /**
+     * Enable or disable fog
+     * 
+     * @param fog Sets if fog should be enabled or not
+     */
     public void set_fog(boolean fog) {
         this.fog = fog;
     }
     
+    /**
+     * Loads a light into the scene (currently only one light is supported, so
+     * calling this function multiple times just updates the light)
+     * 
+     * @param light The light to load
+     */
     public void load_light(Light light) {
         renderer.load_light(light_position_location,
                 light_color_location, light, shaders);
     }
     
+    /**
+     * Create a new entity from a TexturedModel
+     * 
+     * @param model The model to create an entity from
+     * @param x
+     * @param y
+     * @param z
+     * @param rx The rotation on the X axis of the entity
+     * @param ry The rotation on the Y axis of the entity
+     * @param rz The rotation on the Z axis of the entity
+     * @param scale The scale of the entity
+     * @return A new Entity object
+     */
     public Entity create_entity(TexturedModel model, float x, float y, float z,
             float rx, float ry, float rz, float scale) {
         return new Entity(model, x, y, z, rx, ry, rz, scale,
                 shaders, transformation_matrix_location);
     }
     
+    /**
+     * Prepare the engine to render a frame
+     */
     public void init() {
         shaders.load_in_uniform_var(sky_color_location,
                 new Vector3f(r, g, b));
@@ -166,20 +226,36 @@ public class Engine {
                 fog_density_location, fog_location, shaders);
     }
     
+    /**
+     * Prepare a model to be rendered
+     * 
+     * @param model
+     */
     public void start_using_model(TexturedModel model) {
         renderer.start_using_model(model, shine_damper_location,
                 reflectivity_location, shaders);
         used_model = model;
     }
     
+    /**
+     * Stop rendering this model
+     */
     public void stop_using_model() {
         renderer.stop_using_model(used_model);
     }
     
+    /**
+     * Render an entity
+     * 
+     * @param entity The entity to render
+     */
     public void render_entity(Entity entity) {
         renderer.render_entity(entity);
     }
     
+    /**
+     * Free memory etc. after using the engine
+     */
     public void destroy() {
         window.destroy();
         shaders.stop();
