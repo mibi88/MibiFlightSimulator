@@ -40,12 +40,23 @@ uniform float fog_density;
 
 uniform int fog;
 
+uniform float texture_x;
+uniform float texture_y;
+
+uniform float cell_size;
+
 void main(void) {
     vec4 world_position = transformation_matrix * vec4(position, 1.0);
     
     vec4 position_relative_to_camera = view_matrix * world_position;
     gl_Position = projection_matrix * position_relative_to_camera;
     pass_texture_coords = texture_coords;
+    
+    if(cell_size < 1.0) {
+        pass_texture_coords *= cell_size;
+        pass_texture_coords.x += texture_x;
+        pass_texture_coords.y += texture_y;
+    }
     
     normal_vector = (transformation_matrix * vec4(normal, 0.0)).xyz;
     to_light_vector = light_position - world_position.xyz;

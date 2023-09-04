@@ -116,6 +116,7 @@ public class Terrain {
         // print_array(indices, "\n");
         return new TexturedModel(vertices, indices, normals, texture_coords,
                 texture_file, TexturedModel.FILTER_MIPMAP_LINEAR,
-                TexturedModel.WRAP_REPEAT, 4);
+                TexturedModel.WRAP_REPEAT, 4,
+                1);
     }
 }

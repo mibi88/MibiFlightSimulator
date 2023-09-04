@@ -48,6 +48,10 @@ public class Engine {
     int fog_location;
     int sky_color_location;
     
+    int texture_x_location;
+    int texture_y_location;
+    int cell_size_location;
+    
     float r;
     float g;
     float b;
@@ -87,8 +91,8 @@ public class Engine {
         
         this.fog = fog;
         
-        window = new Window(640, 480,
-                    "MibiFlightSimulator", 4);
+        window = new Window(640, 480, "MibiFlightSimulator",
+                4);
             
         shaders = new Shaders(
                 "vertex_shader.vert",
@@ -129,6 +133,13 @@ public class Engine {
                 "fog");
         sky_color_location = shaders.get_uniform_location(
                 "sky_color");
+        
+        texture_x_location = shaders.get_uniform_location(
+                "texture_x");
+        texture_y_location = shaders.get_uniform_location(
+                "texture_y");
+        cell_size_location = shaders.get_uniform_location(
+                "cell_size");
         
         renderer = new Renderer(window);
         renderer.load_projection_matrix(projection_matrix_location, shaders);
@@ -206,12 +217,14 @@ public class Engine {
      * @param ry The rotation on the Y axis of the entity
      * @param rz The rotation on the Z axis of the entity
      * @param scale The scale of the entity
+     * @param texture_num The number of the texture in the texture atlas to use
      * @return A new Entity object
      */
     public Entity create_entity(TexturedModel model, float x, float y, float z,
-            float rx, float ry, float rz, float scale) {
+            float rx, float ry, float rz, float scale, int texture_num) {
         return new Entity(model, x, y, z, rx, ry, rz, scale,
-                shaders, transformation_matrix_location);
+                shaders, transformation_matrix_location, texture_num,
+                texture_x_location, texture_y_location, cell_size_location);
     }
     
     /**

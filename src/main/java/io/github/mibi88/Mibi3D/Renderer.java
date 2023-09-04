@@ -216,6 +216,21 @@ public class Renderer {
                 transformation_matrix
         );
         
+        if(model.texture_atlas_size > 0) {
+            entity.shaders.load_in_uniform_var(
+                    entity.texture_x_location, 
+                    entity.texture_x
+            );
+            entity.shaders.load_in_uniform_var(
+                    entity.texture_y_location, 
+                    entity.texture_y
+            );
+            entity.shaders.load_in_uniform_var(
+                    entity.cell_size_location, 
+                    entity.cell_size
+            );
+        }
+        
         GL30.glDrawElements(GL30.GL_TRIANGLES,
                 model.get_vertices_amount(), GL30.GL_UNSIGNED_INT,
                 0);

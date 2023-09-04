@@ -40,7 +40,7 @@ public class MibiFlightSimulator {
                     "models/plane.png",
                     TexturedModel.FILTER_MIPMAP_LINEAR,
                     TexturedModel.WRAP_REPEAT,
-                    4f
+                    4f, 1
             );
             plane.shine_damper = 5f;
             plane.reflectivity = 1f;
@@ -51,7 +51,7 @@ public class MibiFlightSimulator {
                     "models/sun.png",
                     TexturedModel.FILTER_MIPMAP_LINEAR,
                     TexturedModel.WRAP_REPEAT,
-                    4f
+                    4f, 1
             );
             sun_model.shine_damper = 10f;
             sun_model.reflectivity = 1f;
@@ -62,16 +62,18 @@ public class MibiFlightSimulator {
             );
             
             Entity player = engine.create_entity(plane, 0f, 64f, 0f,
-                    0f, 0f, 0f, 1f);
+                    0f, 0f, 0f, 1f, 0);
             
             Camera camera = engine.get_camera();
             
             Plane movement = new Plane(camera);
             
             Entity terrain = engine.create_entity(terrain_model,
-                    1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f);
+                    1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f,
+                    0);
             Entity sun = engine.create_entity(sun_model,
-                    0f, 70f, 0f, 0f, 0f, 0f, 1f);
+                    0f, 70f, 0f, 0f, 0f, 0f, 1f,
+                    0);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             

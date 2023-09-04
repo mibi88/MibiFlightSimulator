@@ -46,6 +46,8 @@ public class TexturedModel extends Model {
     public final static int WRAP_CLAMP_TO_EDGE = GL30.GL_CLAMP_TO_EDGE;
     public final static int WRAP_CLAMP_TO_BORDER = GL30.GL_CLAMP_TO_BORDER;
     
+    public final int texture_atlas_size;
+    
     private final ArrayList<Integer> texture_list;
     
     /**
@@ -61,12 +63,16 @@ public class TexturedModel extends Model {
      * @param texture_wrap The way to wrap the texture (final integers that
      * start with WRAP, in this class)
      * @param anisotropy_amount The amount of anisotropy. 0 to disable it
+     * @param texture_atlas_size The size of the texture atlas. Set it to 1 or
+     * smaller to disable it
      * @throws Exception
      */
     public TexturedModel(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords, String texture_file, int texture_filter,
-            int texture_wrap, float anisotropy_amount) throws Exception {
+            int texture_wrap, float anisotropy_amount, int texture_atlas_size)
+            throws Exception {
         super(vertices, indices, normals, texture_coords);
+        this.texture_atlas_size = texture_atlas_size;
         texture_list = new ArrayList<>();
         texture_id = load_texture(texture_file, texture_filter,
                 texture_wrap, anisotropy_amount);
@@ -83,12 +89,15 @@ public class TexturedModel extends Model {
      * @param texture_wrap The way to wrap the texture (final integers that
      * start with WRAP, in this class)
      * @param anisotropy_amount The amount of anisotropy. 0 to disable it
+     * @param texture_atlas_size The size of the texture atlas. Set it to 1 or
+     * smaller to disable it
      * @throws Exception
      */
     public TexturedModel(String obj_file, int mesh_num, String texture_file,
-            int texture_filter, int texture_wrap, float anisotropy_amount)
-            throws Exception {
+            int texture_filter, int texture_wrap, float anisotropy_amount,
+            int texture_atlas_size) throws Exception {
         super(obj_file, 0);
+        this.texture_atlas_size = texture_atlas_size;
         texture_list = new ArrayList<>();
         texture_id = load_texture(texture_file, texture_filter,
                 texture_wrap, anisotropy_amount);
