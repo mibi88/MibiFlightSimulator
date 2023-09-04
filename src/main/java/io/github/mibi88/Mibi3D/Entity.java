@@ -84,7 +84,7 @@ public class Entity {
         } else {
             this.texture_x = 0f;
             this.texture_y = 0f;
-            this.cell_size = 0f;
+            this.cell_size = 1f;
         }
     }
     

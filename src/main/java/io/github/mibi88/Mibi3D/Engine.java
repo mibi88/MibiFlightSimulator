@@ -27,7 +27,7 @@ import org.joml.Vector3f;
 public class Engine {
     private final Window window;
     private final Camera camera;
-    private final Shaders shaders;
+    private final Shaders shaders_3D;
     private final Renderer renderer;
     
     private TexturedModel used_model;
@@ -94,55 +94,55 @@ public class Engine {
         window = new Window(640, 480, "MibiFlightSimulator",
                 4);
             
-        shaders = new Shaders(
-                "vertex_shader.vert",
-                "fragment_shader.frag"
+        shaders_3D = new Shaders(
+                "3D_vertex_shader.vert",
+                "3D_fragment_shader.frag"
         );
-        shaders.bind_attribute(0, "position");
-        shaders.bind_attribute(1, "texture_coords");
-        shaders.bind_attribute(2, "normal");
+        shaders_3D.bind_attribute(0, "position");
+        shaders_3D.bind_attribute(1, "texture_coords");
+        shaders_3D.bind_attribute(2, "normal");
 
-        shaders.finish_init();
+        shaders_3D.finish_init();
 
-        shaders.start();
+        shaders_3D.start();
 
-        transformation_matrix_location = shaders.get_uniform_location(
+        transformation_matrix_location = shaders_3D.get_uniform_location(
                 "transformation_matrix");
-        projection_matrix_location = shaders.get_uniform_location(
+        projection_matrix_location = shaders_3D.get_uniform_location(
                 "projection_matrix");
-        view_matrix_location = shaders.get_uniform_location(
+        view_matrix_location = shaders_3D.get_uniform_location(
                 "view_matrix");
 
-        light_position_location = shaders.get_uniform_location(
+        light_position_location = shaders_3D.get_uniform_location(
                 "light_position");
-        light_color_location = shaders.get_uniform_location(
+        light_color_location = shaders_3D.get_uniform_location(
                 "light_color");
 
-        shine_damper_location = shaders.get_uniform_location(
+        shine_damper_location = shaders_3D.get_uniform_location(
                 "shine_damper");
-        reflectivity_location = shaders.get_uniform_location(
+        reflectivity_location = shaders_3D.get_uniform_location(
                 "reflectivity");
-        ambient_lighting_location = shaders.get_uniform_location(
+        ambient_lighting_location = shaders_3D.get_uniform_location(
                 "ambient_lighting");
         
-        fog_gradient_location = shaders.get_uniform_location(
+        fog_gradient_location = shaders_3D.get_uniform_location(
                 "fog_gradient");
-        fog_density_location = shaders.get_uniform_location(
+        fog_density_location = shaders_3D.get_uniform_location(
                 "fog_density");
-        fog_location = shaders.get_uniform_location(
+        fog_location = shaders_3D.get_uniform_location(
                 "fog");
-        sky_color_location = shaders.get_uniform_location(
+        sky_color_location = shaders_3D.get_uniform_location(
                 "sky_color");
         
-        texture_x_location = shaders.get_uniform_location(
+        texture_x_location = shaders_3D.get_uniform_location(
                 "texture_x");
-        texture_y_location = shaders.get_uniform_location(
+        texture_y_location = shaders_3D.get_uniform_location(
                 "texture_y");
-        cell_size_location = shaders.get_uniform_location(
+        cell_size_location = shaders_3D.get_uniform_location(
                 "cell_size");
         
         renderer = new Renderer(window);
-        renderer.load_projection_matrix(projection_matrix_location, shaders);
+        renderer.load_projection_matrix(projection_matrix_location, shaders_3D);
 
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
     }
@@ -203,7 +203,7 @@ public class Engine {
      */
     public void load_light(Light light) {
         renderer.load_light(light_position_location,
-                light_color_location, light, shaders);
+                light_color_location, light, shaders_3D);
     }
     
     /**
@@ -223,7 +223,7 @@ public class Engine {
     public Entity create_entity(TexturedModel model, float x, float y, float z,
             float rx, float ry, float rz, float scale, int texture_num) {
         return new Entity(model, x, y, z, rx, ry, rz, scale,
-                shaders, transformation_matrix_location, texture_num,
+                shaders_3D, transformation_matrix_location, texture_num,
                 texture_x_location, texture_y_location, cell_size_location);
     }
     
@@ -231,13 +231,13 @@ public class Engine {
      * Prepare the engine to render a frame
      */
     public void init() {
-        shaders.load_in_uniform_var(sky_color_location,
+        shaders_3D.load_in_uniform_var(sky_color_location,
                 new Vector3f(r, g, b));
-        renderer.init(window, view_matrix_location, camera, shaders,
+        renderer.init(window, view_matrix_location, camera, shaders_3D,
                 r, g, b, ambient_lighting, ambient_lighting_location);
         renderer.load_fog(fog_gradient, fog_density, fog,
                 fog_gradient_location,
-                fog_density_location, fog_location, shaders);
+                fog_density_location, fog_location, shaders_3D);
     }
     
     /**
@@ -247,7 +247,7 @@ public class Engine {
      */
     public void start_using_model(TexturedModel model) {
         renderer.start_using_model(model, shine_damper_location,
-                reflectivity_location, shaders);
+                reflectivity_location, shaders_3D);
         used_model = model;
     }
     
@@ -272,7 +272,7 @@ public class Engine {
      */
     public void destroy() {
         window.destroy();
-        shaders.stop();
-        shaders.free();
+        shaders_3D.stop();
+        shaders_3D.free();
     }
 }
