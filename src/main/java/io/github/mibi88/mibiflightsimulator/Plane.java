@@ -26,9 +26,9 @@ import org.joml.Vector3f;
  */
 public class Plane {
     private Camera plane;
-    float speed = 0f;
-    float max_speed = 1f;
+    float max_speed = 2f;
     float min_fly_speed = 0.5f;
+    float speed = 0f;
     
     float rx_speed = 0.05f;
     float ry_speed = 0.05f;
@@ -40,8 +40,8 @@ public class Plane {
     
     float rz_mul = 3f;
     
-    float acceleration = 0.1f;
-    float slow_down = 0.1f;
+    float acceleration = 0.005f;
+    float slow_down = 0.005f;
     
     float fall_speed;
     
@@ -56,7 +56,8 @@ public class Plane {
     }
     
     public void speed_up() {
-        speed += acceleration;
+        if(speed < max_speed) speed += acceleration;
+        if(speed > max_speed) speed = max_speed;
         got_faster = true;
     }
     
@@ -143,6 +144,6 @@ public class Plane {
         while(plane.ry < 0f) plane.ry = 360 - plane.ry;
         while(plane.rz < 0f) plane.rz = 360 - plane.rz;
         
-        System.out.println(plane.rz);
+        System.out.println(speed);
     }
 }

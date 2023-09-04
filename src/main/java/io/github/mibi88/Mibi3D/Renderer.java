@@ -19,11 +19,11 @@ package io.github.mibi88.Mibi3D;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 
 /**
- *
+ * A class that is used to render the 3D scene
+ * 
  * @author mibi88
  */
 public class Renderer {
@@ -35,6 +35,7 @@ public class Renderer {
     /**
      * Initializes the renderer by creating the projection matrix used when
      * rendering the 3D scene.
+     * 
      * @param window
      */
     public Renderer(Window window) {
@@ -63,6 +64,16 @@ public class Renderer {
         );
     }
     
+    /**
+     * Set the light used when rendering the 3D scene
+     * 
+     * @param light_position_location The location of the uniform variable that
+     * will contain the position of the light
+     * @param light_color_location The location of the uniform variable that
+     * will contain the color of the light
+     * @param light The Light object
+     * @param shaders The Shaders object to load the light to
+     */
     public void load_light(int light_position_location,
             int light_color_location, Light light, Shaders shaders) {
         shaders.load_in_uniform_var(light_position_location,
@@ -71,6 +82,17 @@ public class Renderer {
                 new Vector3f(light.r, light.g, light.b));
     }
     
+    /**
+     * Load the shine and reflectivity values used to render a model
+     * 
+     * @param shine_damper_location The location of the shine damper uniform
+     * variable
+     * @param reflectivity_location The location of the reflectivity uniform
+     * variable
+     * @param shine_damper The shine damper value
+     * @param reflectivity The reflectivity value
+     * @param shaders The Shaders to load the variables to
+     */
     public void load_shine_and_reflectivity(int shine_damper_location,
             int reflectivity_location,
             float shine_damper, float reflectivity, Shaders shaders) {
@@ -80,6 +102,17 @@ public class Renderer {
                 reflectivity);
     }
     
+    /**
+     * Load up data about the fog in the 3D scene
+     * 
+     * @param gradient The gradient of the fog
+     * @param density The density of the fog
+     * @param fog If fog should be enabled or not
+     * @param gradient_location The location of the gradient uniform variable
+     * @param density_location The location of the density uniform variable
+     * @param fog_location The location of the boolean to enable or disable fog
+     * @param shaders The Shaders object to load the data to
+     */
     public void load_fog(float gradient, float density, boolean fog,
             int gradient_location, int density_location, int fog_location,
             Shaders shaders) {
@@ -104,6 +137,13 @@ public class Renderer {
      * @param shaders The shader object that will be used to load the view
      * matrix as a uniform variable to the shaders with the
      * Shaders.get_uniform_location method.
+     * @param r The red component of the sky color
+     * @param g The green component of the sky color
+     * @param b The blue component of the sky color
+     * @param ambient_lighting The amount of ambient lighting, a float between 0
+     * and 1
+     * @param ambient_lighting_location The location of the ambient lighting
+     * uniform variable
      */
     public void init(Window window, int view_matrix_location, Camera camera,
             Shaders shaders, float r, float g, float b,
@@ -117,6 +157,16 @@ public class Renderer {
                 ambient_lighting);
     }
     
+    /**
+     * Start drawing entities of a model
+     * 
+     * @param model The model that will be used to draw the next entities
+     * @param shine_damper_location The location of the shine damper uniform
+     * variable
+     * @param reflectivity_location The location of the reflectivity uniform
+     * variable
+     * @param shaders The Shaders object to use
+     */
     public void start_using_model(TexturedModel model,
             int shine_damper_location, int reflectivity_location,
             Shaders shaders) {
@@ -134,6 +184,11 @@ public class Renderer {
         );
     }
     
+    /**
+     * Stop using a model to render entities
+     * 
+     * @param model The model that was used to render the entities
+     */
     public void stop_using_model(TexturedModel model) {
         model.unbind_texture();
         GL30.glDisableVertexAttribArray(0);

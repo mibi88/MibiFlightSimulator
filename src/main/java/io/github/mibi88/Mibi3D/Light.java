@@ -18,7 +18,7 @@
 package io.github.mibi88.Mibi3D;
 
 /**
- *
+ * A class that represents a light in a 3D scene
  * @author mibi88
  */
 public class Light {

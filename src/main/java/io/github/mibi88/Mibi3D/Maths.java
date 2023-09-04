@@ -21,7 +21,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- *
+ * Some methods to create matrices
+ * 
  * @author mibi88
  */
 public class Maths {

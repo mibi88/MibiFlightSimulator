@@ -28,11 +28,21 @@ import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 /**
- *
+ * A class to manage a window with an OpenGL context
  * @author mibi88
  */
 public class Window {
     public long window_id;
+    
+    /**
+     * Create a new window
+     * 
+     * @param width The width of the window
+     * @param height The height of the window
+     * @param title The title of the window
+     * @param multisample The amount of multisampling. 0 to disable it
+     * @throws Exception
+     */
     public Window(int width, int height, String title, int multisample)
             throws Exception {
         
@@ -86,12 +96,18 @@ public class Window {
         update_gl_viewport();
     }
     
+    /**
+     * Update the content of the window
+     */
     public void update() {
         // TODO: update GL viewport only after resize
         update_gl_viewport();
         GLFW.glfwSwapBuffers(window_id);
     }
     
+    /**
+     * Update the OpenGL viewport to fill the window
+     */
     public void update_gl_viewport() {
         int[] window_size = get_window_size();
         int max_size = window_size[0] > window_size[1] ?
@@ -103,14 +119,25 @@ public class Window {
                 (window_size[1]-max_size)/2, max_size, max_size);
     }
     
+    /**
+     * Poll events to get for example keyboard inputs later on
+     */
     public void poll_events() {
         glfwPollEvents();
     }
     
+    /**
+     * Check if the user tried to close the window
+     * 
+     * @return A boolean that is true if the user tried to close the window
+     */
     public boolean quit_asked() {
         return glfwWindowShouldClose(window_id);
     }
     
+    /**
+     * Delete everything that's not needed anymore
+     */
     public void destroy() {
         glfwFreeCallbacks(window_id);
         glfwDestroyWindow(window_id);
@@ -119,6 +146,12 @@ public class Window {
         glfwSetErrorCallback(null).free();
     }
     
+    /**
+     * Get the size of the window
+     * 
+     * @return An array of integers that contains at an index of 0 the width and
+     * at an index of 1 the height of the window
+     */
     public int[] get_window_size() {
         int[] size = new int[2];
         IntBuffer width_buffer = BufferUtils.createIntBuffer(1);

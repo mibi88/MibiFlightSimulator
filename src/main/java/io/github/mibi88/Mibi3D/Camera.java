@@ -18,7 +18,8 @@
 package io.github.mibi88.Mibi3D;
 
 /**
- *
+ * A class that represents a camera in a 3D scene
+ * 
  * @author mibi88
  */
 public class Camera {

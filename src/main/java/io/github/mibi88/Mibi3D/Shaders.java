@@ -29,14 +29,24 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 /**
- *
+ * A class that manages the vertex and fragment shaders
+ * 
  * @author mibi88
  */
 public class Shaders {
-    private int program_id, vertex_shader_id, fragment_shader_id;
+    private final int program_id, vertex_shader_id, fragment_shader_id;
     
-    private FloatBuffer matrix4f;
+    private final FloatBuffer matrix4f;
     
+    /**
+     * Load the vertex and the fragment shader
+     * 
+     * @param vertex_shader_resource The path to the vertex shader file in the
+     * resources
+     * @param fragment_shader_resource The path to the fragment shader file in
+     * the resources
+     * @throws Exception
+     */
     public Shaders(String vertex_shader_resource,
             String fragment_shader_resource) throws Exception {
         matrix4f = BufferUtils.createFloatBuffer(16);
@@ -51,40 +61,99 @@ public class Shaders {
         GL30.glAttachShader(program_id, fragment_shader_id);
     }
     
+    /**
+     * Finish loading the shaders after calling bind_attribute for each VBO
+     */
     public void finish_init() {
         GL30.glLinkProgram(program_id);
         GL30.glValidateProgram(program_id);
     }
     
+    /**
+     * Get the location of a uniform variable
+     * 
+     * @param name The name of the uniform variable
+     * @return The location of the uniform variable
+     */
     public int get_uniform_location(String name) {
         return GL30.glGetUniformLocation(program_id, name);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The float to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, float item) {
         GL30.glUniform1f(location, item);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The Vector3f to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, Vector3f item) {
         GL30.glUniform3f(location, item.x, item.y, item.z);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The Vector4f to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, Vector4f item) {
         GL30.glUniform4f(location, item.x, item.y, item.z, item.w);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The boolean to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, boolean item) {
         GL30.glUniform1i(location, item ? 1 : 0);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The integer to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, int item) {
         GL30.glUniform1i(location, item);
     }
     
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The Matrix4f to load to the uniform variable
+     */
     public void load_in_uniform_var(int location, Matrix4f item) {
         item.get(matrix4f);
         GL30.glUniformMatrix4fv(location, false, matrix4f);
     }
     
+    /**
+     * Load a shader file
+     * 
+     * @param file_name The shader file in the resources
+     * @param shader_type The shader type (vertex shader, fragment shader etc.)
+     * @return The id of the shader
+     * @throws Exception 
+     */
     private int load_shader_file(String file_name, int shader_type)
             throws Exception {
         InputStream file = getClass().getClassLoader().getResourceAsStream(
@@ -113,19 +182,34 @@ public class Shaders {
         return shader_id;
     }
     
+    /**
+     * Bind a VBO to the shader program
+     * 
+     * @param vbo_n The index of the VBO
+     * @param input_var_name The input variable that it will be bound to
+     */
     public void bind_attribute(int vbo_n, String input_var_name) {
         GL30.glBindAttribLocation(program_id, vbo_n,
                 input_var_name);
     }
     
+    /**
+     * Start using this shader program
+     */
     public void start() {
         GL30.glUseProgram(program_id);
     }
     
+    /**
+     * Stop using this shader program
+     */
     public void stop() {
         GL30.glUseProgram(0);
     }
     
+    /**
+     * Delete this shader program and the shaders
+     */
     public void free() {
         stop();
         

@@ -20,7 +20,8 @@ package io.github.mibi88.Mibi3D;
 import org.joml.Vector3f;
 
 /**
- *
+ * The class that combines all the components of the 3D engine
+ * 
  * @author mibi88
  */
 public class Engine {

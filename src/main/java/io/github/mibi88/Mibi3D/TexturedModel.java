@@ -28,11 +28,13 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 
 /**
- *
+ * A model with a texture
+ * 
  * @author mibi88
  */
 public class TexturedModel extends Model {
     public int texture_id;
+    
     public final static int FILTER_NEAREST = GL30.GL_NEAREST;
     public final static int FILTER_LINEAR = GL30.GL_LINEAR;
     public final static int FILTER_MIPMAP_NEAREST =
@@ -46,6 +48,21 @@ public class TexturedModel extends Model {
     
     private final ArrayList<Integer> texture_list;
     
+    /**
+     * Create a new model with a texture
+     * 
+     * @param vertices The array of vertices of the model
+     * @param indices The position of the vertex to use in the array of vertices
+     * @param normals The normals for each vertex
+     * @param texture_coords The array texture coordinates
+     * @param texture_file The resource file of the texture
+     * @param texture_filter The filter of the texture (final integers that
+     * start with FILTER, in this class)
+     * @param texture_wrap The way to wrap the texture (final integers that
+     * start with WRAP, in this class)
+     * @param anisotropy_amount The amount of anisotropy. 0 to disable it
+     * @throws Exception
+     */
     public TexturedModel(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords, String texture_file, int texture_filter,
             int texture_wrap, float anisotropy_amount) throws Exception {
@@ -55,6 +72,19 @@ public class TexturedModel extends Model {
                 texture_wrap, anisotropy_amount);
     }
     
+    /**
+     * Create a new model with a texture
+     * 
+     * @param obj_file The path to the OBJ file in the resources
+     * @param mesh_num The number of the mesh to load in the OBJ file
+     * @param texture_file The path to the texture in the resources folder
+     * @param texture_filter The filter of the texture (final integers that
+     * start with FILTER, in this class)
+     * @param texture_wrap The way to wrap the texture (final integers that
+     * start with WRAP, in this class)
+     * @param anisotropy_amount The amount of anisotropy. 0 to disable it
+     * @throws Exception
+     */
     public TexturedModel(String obj_file, int mesh_num, String texture_file,
             int texture_filter, int texture_wrap, float anisotropy_amount)
             throws Exception {
@@ -64,6 +94,18 @@ public class TexturedModel extends Model {
                 texture_wrap, anisotropy_amount);
     }
     
+    /**
+     * Loads a texture
+     * 
+     * @param file_name The name of the texture file
+     * @param filter The filter of the texture (final integers that
+     * start with FILTER, in this class)
+     * @param wrap The way to wrap the texture (final integers that
+     * start with WRAP, in this class)
+     * @param anisotropy_amount The amount of anisotropy. 0 to disable it
+     * @return The id of the texture
+     * @throws Exception 
+     */
     private int load_texture(String file_name, int filter, int wrap,
             float anisotropy_amount) throws Exception {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
@@ -137,14 +179,23 @@ public class TexturedModel extends Model {
         return id;
     }
     
+    /**
+     * Start using the texture of this model
+     */
     public void bind_texture() {
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, texture_id);
     }
     
+    /**
+     * Stop using the texture of this model
+     */
     public void unbind_texture() {
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
     }
     
+    /**
+     * Delete everything that's not needed anymore
+     */
     @Override
     public void free() {
         super.free();

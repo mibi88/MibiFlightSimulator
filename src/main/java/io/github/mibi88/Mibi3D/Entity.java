@@ -18,7 +18,8 @@
 package io.github.mibi88.Mibi3D;
 
 /**
- *
+ * An entity of a model
+ * 
  * @author mibi88
  */
 public class Entity {
