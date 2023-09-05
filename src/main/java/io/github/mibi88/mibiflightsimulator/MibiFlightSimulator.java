@@ -38,8 +38,8 @@ public class MibiFlightSimulator {
                     "models/plane.obj",
                     0,
                     "models/plane.png",
-                    TexturedModel.FILTER_MIPMAP_LINEAR,
-                    TexturedModel.WRAP_REPEAT,
+                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.WRAP_REPEAT,
                     4f, 1
             );
             plane.shine_damper = 5f;
@@ -49,8 +49,8 @@ public class MibiFlightSimulator {
                     "models/sun.obj",
                     0,
                     "models/sun.png",
-                    TexturedModel.FILTER_MIPMAP_LINEAR,
-                    TexturedModel.WRAP_REPEAT,
+                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.WRAP_REPEAT,
                     4f, 1
             );
             sun_model.shine_damper = 10f;
@@ -61,19 +61,26 @@ public class MibiFlightSimulator {
                     -77
             );
             
-            Entity player = engine.create_entity(plane, 0f, 64f, 0f,
-                    0f, 0f, 0f, 1f, 0);
+            ModelEntity player = engine.create_entity(plane, 0f, 64f,
+                    0f, 0f, 0f, 0f, 1f, 0);
             
             Camera camera = engine.get_camera();
             
             Plane movement = new Plane(camera);
             
-            Entity terrain = engine.create_entity(terrain_model,
+            ModelEntity terrain = engine.create_entity(terrain_model,
                     1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f,
                     0);
-            Entity sun = engine.create_entity(sun_model,
+            ModelEntity sun = engine.create_entity(sun_model,
                     0f, 70f, 0f, 0f, 0f, 0f, 1f,
                     0);
+            
+            Image title_image = new Image("images/title.png",
+                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.WRAP_REPEAT, 1);
+            
+            ImageEntity title = engine.create_entity(title_image, 0, 0,
+                    0, 0, 0, 0);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             
@@ -99,6 +106,10 @@ public class MibiFlightSimulator {
                 engine.start_using_model(terrain_model);
                 engine.render_entity(terrain);
                 engine.stop_using_model();
+                
+                /*engine.start_using_image(title_image);
+                engine.render_entity(title);
+                engine.stop_using_image();*/
                 
                 window.update();
                 

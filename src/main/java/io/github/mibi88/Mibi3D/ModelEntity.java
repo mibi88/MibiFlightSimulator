@@ -22,7 +22,7 @@ package io.github.mibi88.Mibi3D;
  * 
  * @author mibi88
  */
-public class Entity {
+public class ModelEntity {
     public TexturedModel model;
     public float x, y, z;
     public float rx, ry, rz;
@@ -56,7 +56,7 @@ public class Entity {
      * @param texture_x_location The location of the texture_x uniform variable
      * @param texture_y_location The location of the texture_y uniform variable
      */
-    public Entity(TexturedModel model, float x, float y, float z, float rx,
+    public ModelEntity(TexturedModel model, float x, float y, float z, float rx,
             float ry, float rz, float scale, Shaders shaders,
             int transformation_matrix_location, int texture_num,
             int texture_x_location, int texture_y_location,

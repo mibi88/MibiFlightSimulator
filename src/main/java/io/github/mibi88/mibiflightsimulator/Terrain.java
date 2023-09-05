@@ -17,6 +17,7 @@
  */
 package io.github.mibi88.mibiflightsimulator;
 
+import io.github.mibi88.Mibi3D.Texture;
 import io.github.mibi88.Mibi3D.TexturedModel;
 import org.joml.Vector3f;
 import org.lwjgl.stb.STBPerlin;
@@ -115,8 +116,8 @@ public class Terrain {
         // print_array(normals, "\n");
         // print_array(indices, "\n");
         return new TexturedModel(vertices, indices, normals, texture_coords,
-                texture_file, TexturedModel.FILTER_MIPMAP_LINEAR,
-                TexturedModel.WRAP_REPEAT, 4,
+                texture_file, Texture.FILTER_MIPMAP_LINEAR,
+                Texture.WRAP_REPEAT, 4,
                 1);
     }
 }

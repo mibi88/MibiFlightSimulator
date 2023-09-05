@@ -32,6 +32,26 @@ import org.lwjgl.stb.STBImage;
  * @author mibi88
  */
 public class Texture {
+    public final static int FILTER_NEAREST = GL30.GL_NEAREST;
+    public final static int FILTER_LINEAR = GL30.GL_LINEAR;
+    public final static int FILTER_MIPMAP_NEAREST =
+            GL30.GL_NEAREST_MIPMAP_NEAREST;
+    public final static int FILTER_MIPMAP_LINEAR = GL30.GL_LINEAR_MIPMAP_LINEAR;
+    
+    public final static int WRAP_REPEAT = GL30.GL_REPEAT;
+    public final static int WRAP_MIRRORED_REPEAT = GL30.GL_MIRRORED_REPEAT;
+    public final static int WRAP_CLAMP_TO_EDGE = GL30.GL_CLAMP_TO_EDGE;
+    public final static int WRAP_CLAMP_TO_BORDER = GL30.GL_CLAMP_TO_BORDER;
+    
+    private int[] size;
+    
+    /**
+     * Create a new object that represents a texture
+     */
+    public Texture() {
+        size = new int[2];
+    }
+    
     /**
      * Loads a texture
      * 
@@ -91,6 +111,9 @@ public class Texture {
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
         
+        size[0] = width.get(0);
+        size[1] = height.get(0);
+        
         //STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer image = STBImage.stbi_load_from_memory(image_data,
                 width, height, channels, 4);
@@ -117,5 +140,14 @@ public class Texture {
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, 0);
         
         return id;
+    }
+    
+    /**
+     * Get the width and the height of the texture
+     * 
+     * @return The width and the height of the texture
+     */
+    public int[] get_size() {
+        return size;
     }
 }

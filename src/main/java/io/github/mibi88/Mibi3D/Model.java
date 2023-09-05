@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL30;
 
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import org.lwjgl.BufferUtils;
@@ -38,10 +37,7 @@ import org.lwjgl.assimp.AIFace;
  * 
  * @author mibi88
  */
-public class Model {
-    protected int vao, vertices_amount;
-    protected ArrayList<Integer> vbo_list;
-    
+public class Model extends VAO {
     public float shine_damper = 10f, reflectivity = 0f;
     
     /**
@@ -54,6 +50,7 @@ public class Model {
      */
     public Model(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
+        super();
         init(vertices, indices, normals, texture_coords);
     }
     
@@ -65,6 +62,7 @@ public class Model {
      * @throws Exception
      */
     public Model(String obj_file, int mesh_num) throws Exception {
+        super();
         InputStream stream = getClass().getClassLoader().getResourceAsStream(
                 obj_file
         );
@@ -176,12 +174,7 @@ public class Model {
      */
     private void init(float[] vertices, int[] indices, float[] normals,
             float[] texture_coords) {
-        // Initialize the VBO ArrayList
-        vbo_list = new ArrayList<>();
-        // Create the VAO
         vertices_amount = indices.length;
-        vao = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray(vao);
         
         // Load the vertices into a VBO
         load_vertices(vertices);
@@ -196,7 +189,7 @@ public class Model {
         load_normals(normals);
         
         // Unbind the VAO
-        GL30.glBindVertexArray(0);
+        unbind_vao();
     }
     
     /**
@@ -261,140 +254,6 @@ public class Model {
         // Put the data in the VBO
         load_in_vbo(0, GL30.GL_ELEMENT_ARRAY_BUFFER,
                 3, indices, false);
-    }
-    
-    /**
-     * Create a VBO
-     * 
-     * @param type The type of VBO
-     */
-    private int create_vbo(int type) {
-        int vbo = GL30.glGenBuffers();
-        vbo_list.add(vbo);
-        GL30.glBindBuffer(
-                type,
-                vbo
-        );
-        return vbo;
-    }
-    
-    /**
-     * Convert an array to a FloatBuffer
-     * 
-     * @param data The data to convert
-     */
-    private FloatBuffer convert_to_buffer(float[] data) {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(
-                data.length
-        );
-        buffer.put(data);
-        buffer.flip();
-        
-        return buffer;
-    }
-    
-    /**
-     * Convert an array to an IntBuffer
-     * 
-     * @param data The data to convert
-     */
-    private IntBuffer convert_to_buffer(int[] data) {
-        IntBuffer buffer = BufferUtils.createIntBuffer(
-                data.length
-        );
-        buffer.put(data);
-        buffer.flip();
-        
-        return buffer;
-    }
-    
-    /**
-     * Store an array in a VBO
-     * 
-     * @param pos The index of the VBO if attrib_pointer is true
-     * @param type The type of data that will be loaded
-     * @param coord_size The size of the coordinates that will be loaded
-     * @param data The data to store
-     * @param attrib_pointer If glVertexAttribPointer should be called
-     */
-    private void load_in_vbo(int pos, int type, int coord_size,
-            float[] data, boolean attrib_pointer) {
-        FloatBuffer buffer = convert_to_buffer(data);
-        
-        GL30.glBufferData(
-                type,
-                buffer,
-                GL30.GL_STATIC_DRAW
-        );
-        if(attrib_pointer) {
-            GL30.glVertexAttribPointer(pos, coord_size,
-                    GL30.GL_FLOAT, false, 0, 0);
-        }
-    }
-    
-    /**
-     * Store an array in a VBO
-     * 
-     * @param pos The index of the VBO if attrib_pointer is true
-     * @param type The type of data that will be loaded
-     * @param coord_size The size of the coordinates that will be loaded
-     * @param data The data to store
-     * @param attrib_pointer If glVertexAttribPointer should be called
-     */
-    private void load_in_vbo(int pos, int type, int coord_size,
-            int[] data, boolean attrib_pointer) {
-        IntBuffer buffer = convert_to_buffer(data);
-        
-        GL30.glBufferData(
-                type,
-                buffer,
-                GL30.GL_STATIC_DRAW
-        );
-        if(attrib_pointer) {
-            GL30.glVertexAttribPointer(pos, coord_size,
-                    GL30.GL_FLOAT, false, 0, 0);
-        }
-    }
-    
-    /**
-     * Unbind the currently bound VBO
-     * 
-     * @param type The type of data stored in the VBO
-     */
-    private void unbind_vbo(int type) {
-        GL30.glBindBuffer(
-                type, 0
-        );
-    }
-    
-    /**
-     * Delete the VAO and the VBOs
-     */
-    public void free() {
-        GL30.glDeleteVertexArrays(vao);
-        for(int vbo:vbo_list) {
-            GL30.glDeleteBuffers(vbo);
-        }
-    }
-    
-    /**
-     * Get the id of the VAO
-     * 
-     * @return The id of the VAO
-     */
-    public int get_vao() {
-        return vao;
-    }
-    
-    /**
-     * Get a VBO
-     * 
-     * @param vbo_n The number of the VBO
-     * @return The id of the VBO
-     * @throws IndexOutOfBoundsException
-     */
-    public int get_vbo(int vbo_n) throws IndexOutOfBoundsException {
-        return vbo_list.get(vbo_n);
     }
     
     /**

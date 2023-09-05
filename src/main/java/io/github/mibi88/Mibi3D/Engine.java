@@ -27,10 +27,14 @@ import org.joml.Vector3f;
 public class Engine {
     private final Window window;
     private final Camera camera;
+    
     private final Shaders shaders_3D;
+    private final Shaders shaders_2D;
+    
     private final Renderer renderer;
     
     private TexturedModel used_model;
+    private Image used_image;
     
     int transformation_matrix_location;
     int projection_matrix_location;
@@ -52,12 +56,17 @@ public class Engine {
     int texture_y_location;
     int cell_size_location;
     
+    int transformation_matrix_location_2D;
+    
+    int texture_x_location_2D;
+    int texture_y_location_2D;
+    int cell_size_location_2D;
+    
     float r;
     float g;
     float b;
     
     float ambient_lighting;
-    
     
     float fog_gradient;
     float fog_density;
@@ -98,6 +107,7 @@ public class Engine {
                 "3D_vertex_shader.vert",
                 "3D_fragment_shader.frag"
         );
+        
         shaders_3D.bind_attribute(0, "position");
         shaders_3D.bind_attribute(1, "texture_coords");
         shaders_3D.bind_attribute(2, "normal");
@@ -141,8 +151,35 @@ public class Engine {
         cell_size_location = shaders_3D.get_uniform_location(
                 "cell_size");
         
+        //shaders_3D.stop();
+        
+        shaders_2D = new Shaders(
+                "2D_vertex_shader.vert",
+                "2D_fragment_shader.frag"
+        );
+        
+        shaders_2D.bind_attribute(0, "position");
+        shaders_2D.bind_attribute(1, "texture_coords");
+        
+        shaders_2D.finish_init();
+
+        //shaders_2D.start();
+        
+        transformation_matrix_location_2D = shaders_2D.get_uniform_location(
+                "transformation_matrix");
+        
+        texture_x_location_2D = shaders_2D.get_uniform_location(
+                "texture_x");
+        texture_y_location_2D = shaders_2D.get_uniform_location(
+                "texture_y");
+        cell_size_location_2D = shaders_2D.get_uniform_location(
+                "cell_size");
+        
+        //shaders_2D.stop();
+        
         renderer = new Renderer(window);
-        renderer.load_projection_matrix(projection_matrix_location, shaders_3D);
+        renderer.load_projection_matrix(projection_matrix_location,
+                shaders_3D);
 
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
     }
@@ -220,11 +257,35 @@ public class Engine {
      * @param texture_num The number of the texture in the texture atlas to use
      * @return A new Entity object
      */
-    public Entity create_entity(TexturedModel model, float x, float y, float z,
+    public ModelEntity create_entity(TexturedModel model, float x, float y, float z,
             float rx, float ry, float rz, float scale, int texture_num) {
-        return new Entity(model, x, y, z, rx, ry, rz, scale,
+        return new ModelEntity(model, x, y, z, rx, ry, rz, scale,
                 shaders_3D, transformation_matrix_location, texture_num,
                 texture_x_location, texture_y_location, cell_size_location);
+    }
+    
+    /**
+     * Create a new entity from an Image
+     * 
+     * @param image The image to create an entity from
+     * @param x
+     * @param y
+     * @param rot The rotation of the entity
+     * @param x_scale The scale on the X axis of the entity
+     * @param y_scale The scale on the Y axis of the entity
+     * @param texture_num The number of the texture in the texture atlas to use
+     * @return A new Entity object
+     */
+    public ImageEntity create_entity(Image image, float x, float y, float rot,
+            float x_scale, float y_scale, int texture_num) {
+        return new ImageEntity(image, x, y, rot, x_scale, y_scale,
+                shaders_2D,
+                transformation_matrix_location_2D,
+                texture_num,
+                texture_x_location_2D,
+                texture_y_location_2D,
+                cell_size_location_2D
+        );
     }
     
     /**
@@ -237,7 +298,8 @@ public class Engine {
                 r, g, b, ambient_lighting, ambient_lighting_location);
         renderer.load_fog(fog_gradient, fog_density, fog,
                 fog_gradient_location,
-                fog_density_location, fog_location, shaders_3D);
+                fog_density_location, fog_location,
+                shaders_3D);
     }
     
     /**
@@ -249,6 +311,18 @@ public class Engine {
         renderer.start_using_model(model, shine_damper_location,
                 reflectivity_location, shaders_3D);
         used_model = model;
+        shaders_3D.start();
+    }
+    
+    /**
+     * Prepare an image to be rendered
+     * 
+     * @param model
+     */
+    public void start_using_image(Image image) {
+        renderer.start_using_image(image, shaders_2D);
+        used_image = image;
+        shaders_2D.start();
     }
     
     /**
@@ -259,11 +333,27 @@ public class Engine {
     }
     
     /**
+     * Stop rendering this image
+     */
+    public void stop_using_image() {
+        renderer.stop_using_image(used_image);
+    }
+    
+    /**
      * Render an entity
      * 
      * @param entity The entity to render
      */
-    public void render_entity(Entity entity) {
+    public void render_entity(ModelEntity entity) {
+        renderer.render_entity(entity);
+    }
+    
+    /**
+     * Render an entity
+     * 
+     * @param entity The entity to render
+     */
+    public void render_entity(ImageEntity entity) {
         renderer.render_entity(entity);
     }
     
@@ -272,7 +362,11 @@ public class Engine {
      */
     public void destroy() {
         window.destroy();
+        
         shaders_3D.stop();
         shaders_3D.free();
+        
+        shaders_2D.stop();
+        shaders_2D.free();
     }
 }

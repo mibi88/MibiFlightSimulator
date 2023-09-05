@@ -197,11 +197,38 @@ public class Renderer {
     }
     
     /**
+     * Start drawing entities of an image
+     * 
+     * @param image The image that will be used to draw the next entities
+     * @param shaders The Shaders object to use
+     */
+    public void start_using_image(Image image, Shaders shaders) {
+        GL30.glBindVertexArray(image.get_vao());
+        GL30.glEnableVertexAttribArray(0);
+        GL30.glEnableVertexAttribArray(1);
+        GL30.glEnableVertexAttribArray(2);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, image.texture_id);
+    }
+    
+    /**
+     * Stop using an image to render entities
+     * 
+     * @param image The image that was used to render the entities
+     */
+    public void stop_using_image(Image image) {
+        image.unbind_texture();
+        GL30.glDisableVertexAttribArray(0);
+        GL30.glDisableVertexAttribArray(1);
+        GL30.glDisableVertexAttribArray(2);
+    }
+    
+    /**
      * Render a 3D model in the 3D scene
      * 
      * @param entity The entity to draw on screen.
      */
-    public void render_entity(Entity entity) {
+    public void render_entity(ModelEntity entity) {
         TexturedModel model = entity.model;
         Matrix4f transformation_matrix = Maths.create_transformation_matrix(
                 new Vector3f(entity.x, entity.y, entity.z),
@@ -233,6 +260,46 @@ public class Renderer {
         
         GL30.glDrawElements(GL30.GL_TRIANGLES,
                 model.get_vertices_amount(), GL30.GL_UNSIGNED_INT,
+                0);
+    }
+    
+    /**
+     * Render an image on the screen
+     * 
+     * @param entity The entity to draw on screen.
+     */
+    public void render_entity(ImageEntity entity) {
+        Image image = entity.image;
+        /*Matrix4f transformation_matrix = Maths.create_transformation_matrix(
+                new Vector3f(entity.x, entity.y, entity.z),
+                entity.rx,
+                entity.ry,
+                entity.rz,
+                entity.scale
+        );
+        
+        entity.shaders.load_in_uniform_var(
+                entity.transformation_matrix_location, 
+                transformation_matrix
+        );*/
+        
+        if(image.texture_atlas_size > 0) {
+            entity.shaders.load_in_uniform_var(
+                    entity.texture_x_location, 
+                    entity.texture_x
+            );
+            entity.shaders.load_in_uniform_var(
+                    entity.texture_y_location, 
+                    entity.texture_y
+            );
+            entity.shaders.load_in_uniform_var(
+                    entity.cell_size_location, 
+                    entity.cell_size
+            );
+        }
+        
+        GL30.glDrawElements(GL30.GL_TRIANGLES,
+                6, GL30.GL_UNSIGNED_INT,
                 0);
     }
 }

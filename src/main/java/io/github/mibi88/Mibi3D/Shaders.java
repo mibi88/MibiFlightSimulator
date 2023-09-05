@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL30;
  * @author mibi88
  */
 public class Shaders {
-    private final int program_id, vertex_shader_id, fragment_shader_id;
+    protected final int program_id, vertex_shader_id, fragment_shader_id;
     
     private final FloatBuffer matrix4f;
     

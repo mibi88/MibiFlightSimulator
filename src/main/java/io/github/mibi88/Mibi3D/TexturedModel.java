@@ -35,17 +35,6 @@ import org.lwjgl.stb.STBImage;
 public class TexturedModel extends Model {
     public int texture_id;
     
-    public final static int FILTER_NEAREST = GL30.GL_NEAREST;
-    public final static int FILTER_LINEAR = GL30.GL_LINEAR;
-    public final static int FILTER_MIPMAP_NEAREST =
-            GL30.GL_NEAREST_MIPMAP_NEAREST;
-    public final static int FILTER_MIPMAP_LINEAR = GL30.GL_LINEAR_MIPMAP_LINEAR;
-    
-    public final static int WRAP_REPEAT = GL30.GL_REPEAT;
-    public final static int WRAP_MIRRORED_REPEAT = GL30.GL_MIRRORED_REPEAT;
-    public final static int WRAP_CLAMP_TO_EDGE = GL30.GL_CLAMP_TO_EDGE;
-    public final static int WRAP_CLAMP_TO_BORDER = GL30.GL_CLAMP_TO_BORDER;
-    
     public final int texture_atlas_size;
     
     private final ArrayList<Integer> texture_list;
@@ -59,9 +48,9 @@ public class TexturedModel extends Model {
      * @param texture_coords The array texture coordinates
      * @param texture_file The resource file of the texture
      * @param texture_filter The filter of the texture (final integers that
-     * start with FILTER, in this class)
+     * start with FILTER, in the Texture class)
      * @param texture_wrap The way to wrap the texture (final integers that
-     * start with WRAP, in this class)
+     * start with WRAP, in the Texture class)
      * @param anisotropy_amount The amount of anisotropy. 0 to disable it
      * @param texture_atlas_size The size of the texture atlas. Set it to 1 or
      * smaller to disable it
@@ -87,9 +76,9 @@ public class TexturedModel extends Model {
      * @param mesh_num The number of the mesh to load in the OBJ file
      * @param texture_file The path to the texture in the resources folder
      * @param texture_filter The filter of the texture (final integers that
-     * start with FILTER, in this class)
+     * start with FILTER, in the Texture class)
      * @param texture_wrap The way to wrap the texture (final integers that
-     * start with WRAP, in this class)
+     * start with WRAP, in the Texture class)
      * @param anisotropy_amount The amount of anisotropy. 0 to disable it
      * @param texture_atlas_size The size of the texture atlas. Set it to 1 or
      * smaller to disable it
