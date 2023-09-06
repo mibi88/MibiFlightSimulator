@@ -30,13 +30,12 @@ uniform float texture_y;
 uniform float cell_size;
 
 void main(void) {
-    //gl_Position = transformation_matrix * vec4(position, 0.0, 1.0);
-    gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = transformation_matrix * vec4(position, 0.0, 1.0);
     pass_texture_coords = texture_coords;
     
-    /* if(cell_size < 1.0) {
+    if(cell_size < 1.0) {
         pass_texture_coords *= cell_size;
         pass_texture_coords.x += texture_x;
         pass_texture_coords.y += texture_y;
-    } */
+    }
 }

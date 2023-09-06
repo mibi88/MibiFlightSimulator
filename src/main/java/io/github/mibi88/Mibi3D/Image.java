@@ -26,7 +26,9 @@ import org.lwjgl.opengl.GL30;
  */
 public class Image extends VAO {
     private final ArrayList<Integer> texture_list;
-    public int texture_id, texture_atlas_size;
+    protected int texture_id, texture_atlas_size;
+    
+    public int[] size;
     
     public Image(String texture_file, int texture_filter,
             int texture_wrap, int texture_atlas_size) throws Exception {
@@ -37,6 +39,7 @@ public class Image extends VAO {
         texture_id = texture.load_texture(texture_file,
                 texture_filter, texture_wrap, 0,
                 texture_list);
+        size = texture.get_size();
         
         load_quad();
         unbind_vao();
@@ -44,22 +47,22 @@ public class Image extends VAO {
     
     private void load_quad() {
         float[] vertices = {
-            0f, 0f,
-            1f, 0f,
-            0f, 1f,
-            1f, 1f
+            -0.5f, 0.5f, // v0
+            -0.5f, -0.5f, // v1
+            0.5f, -0.5f, // v2
+            0.5f, 0.5f // v3
         };
-        
-        float[] texture_coords = {
-            1f, 1f,
-            0f, 1f,
-            1f, 0f,
-            0f, 0f
-        };
-        
+
         int[] indices = {
-            0, 2, 1,
-            1, 2, 3
+            0, 1, 3, // Top left triangle (v0, v1, v3)
+            3, 1, 2 // Bottom right triangle (v3, v1, v2)
+        };
+
+        float[] texture_coords = {
+            0f, 0f, // v0
+            0f, 1f, // v1
+            1f, 1f, // v2
+            1f, 0f // v3
         };
         
         load_vertices(vertices);

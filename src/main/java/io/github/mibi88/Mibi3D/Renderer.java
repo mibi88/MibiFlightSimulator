@@ -18,6 +18,7 @@
 package io.github.mibi88.Mibi3D;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
@@ -264,22 +265,23 @@ public class Renderer {
     /**
      * Render an image on the screen
      * 
+     * @param window
      * @param entity The entity to draw on screen.
      */
-    public void render_entity(ImageEntity entity) {
+    public void render_entity(Window window, ImageEntity entity) {
         Image image = entity.image;
-        /*Matrix4f transformation_matrix = Maths.create_transformation_matrix(
-                new Vector3f(entity.x, entity.y, entity.z),
-                entity.rx,
-                entity.ry,
-                entity.rz,
-                entity.scale
+        Matrix4f transformation_matrix = Maths.create_transformation_matrix(
+                new Vector2f(entity.x*window.max_width,
+                        entity.y*window.max_height),
+                entity.rot,
+                entity.x_scale,
+                entity.y_scale
         );
         
         entity.shaders.load_in_uniform_var(
                 entity.transformation_matrix_location, 
                 transformation_matrix
-        );*/
+        );
         
         if(image.texture_atlas_size > 0) {
             entity.shaders.load_in_uniform_var(

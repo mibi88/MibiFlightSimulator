@@ -26,8 +26,9 @@ import org.joml.Vector3f;
  */
 public class Plane {
     private Camera plane;
-    float max_speed = 2f;
-    float min_fly_speed = 0.5f;
+    float max_speed = 2f, max_speed_mph = 110f;
+    float min_fly_speed_mph = 75f;
+    float min_fly_speed = min_fly_speed_mph/max_speed_mph;
     float speed = 0f;
     
     float rx_speed = 0.05f;

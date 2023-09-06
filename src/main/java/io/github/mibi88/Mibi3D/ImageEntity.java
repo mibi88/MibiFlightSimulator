@@ -43,8 +43,17 @@ public class ImageEntity {
         this.x = x;
         this.y = y;
         this.rot = rot;
+        
+        float width = (float)image.size[0], height = (float)image.size[1];
+        
         this.x_scale = x_scale;
         this.y_scale = y_scale;
+        if(image.size[0] > image.size[1]) {
+            this.y_scale *= height/width;
+        } else {
+            this.x_scale *= width/height;
+        }
+        
         this.image = image;
         this.shaders = shaders;
         

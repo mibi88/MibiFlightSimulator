@@ -34,6 +34,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 public class Window {
     public long window_id;
     
+    protected float max_width, max_height;
+    
     /**
      * Create a new window
      * 
@@ -117,6 +119,9 @@ public class Window {
         // on which one is the biggest
         GL30.glViewport((window_size[0]-max_size)/2,
                 (window_size[1]-max_size)/2, max_size, max_size);
+        
+        max_width = (float)window_size[0]/(float)max_size;
+        max_height = (float)window_size[1]/(float)max_size;
     }
     
     /**

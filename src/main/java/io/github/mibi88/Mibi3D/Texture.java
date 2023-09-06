@@ -111,16 +111,15 @@ public class Texture {
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
         
-        size[0] = width.get(0);
-        size[1] = height.get(0);
-        
-        //STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer image = STBImage.stbi_load_from_memory(image_data,
                 width, height, channels, 4);
         
         System.out.printf("Image properties: w=%d, h=%d, channels=%d\n",
                 width.get(0), height.get(0),
                 channels.get(0));
+        
+        size[0] = width.get(0);
+        size[1] = height.get(0);
         
         if(image == null) {
             throw new Exception("Failed to load image!");

@@ -357,7 +357,7 @@ public class Engine {
      * @param entity The entity to render
      */
     public void render_entity(ImageEntity entity) {
-        renderer.render_entity(entity);
+        renderer.render_entity(window, entity);
     }
     
     /**

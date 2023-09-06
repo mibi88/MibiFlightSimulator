@@ -18,6 +18,7 @@
 package io.github.mibi88.Mibi3D;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 /**
@@ -48,6 +49,25 @@ public class Maths {
                 .rotate((float)Math.toRadians(rz),
                         new Vector3f(0, 0, 1))
                 .scale(scale);
+        return matrix;
+    }
+    
+    /**
+     * Create a transformation matrix
+     * 
+     * @param translation
+     * @param rot The rotation of the image
+     * @param scale_x The scale on the X axis
+     * @param scale_y The scale on the Y axis
+     * @return The transformation matrix, a Matrix4f
+     */
+    public static Matrix4f create_transformation_matrix(Vector2f translation,
+            float rot, float scale_x, float scale_y) {
+        Matrix4f matrix = new Matrix4f()
+                .translate(new Vector3f(translation.x, translation.y, 0f))
+                .rotate((float)Math.toRadians(rot),
+                        new Vector3f(0, 0, 1))
+                .scaleXY(scale_x, scale_y);
         return matrix;
     }
     

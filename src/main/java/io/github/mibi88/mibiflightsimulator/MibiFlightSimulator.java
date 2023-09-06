@@ -79,8 +79,11 @@ public class MibiFlightSimulator {
                     Texture.FILTER_MIPMAP_LINEAR,
                     Texture.WRAP_REPEAT, 1);
             
-            ImageEntity title = engine.create_entity(title_image, 0, 0,
-                    0, 0, 0, 0);
+            ImageEntity title = engine.create_entity(title_image,
+                    1f, 0.5f,
+                    0f,
+                    1f, 1f,
+                    0);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             
