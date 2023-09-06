@@ -106,8 +106,8 @@ public class Engine {
                 4);
             
         shaders_3D = new Shaders(
-                "3D_vertex_shader.vert",
-                "3D_fragment_shader.frag"
+                "shaders/3D_vertex_shader.vert",
+                "shaders/3D_fragment_shader.frag"
         );
         
         shaders_3D.bind_attribute(0, "position");
@@ -115,8 +115,6 @@ public class Engine {
         shaders_3D.bind_attribute(2, "normal");
 
         shaders_3D.finish_init();
-
-        shaders_3D.start();
 
         transformation_matrix_location = shaders_3D.get_uniform_location(
                 "transformation_matrix");
@@ -153,19 +151,15 @@ public class Engine {
         cell_size_location = shaders_3D.get_uniform_location(
                 "cell_size");
         
-        shaders_3D.stop();
-        
         shaders_2D = new Shaders(
-                "2D_vertex_shader.vert",
-                "2D_fragment_shader.frag"
+                "shaders/2D_vertex_shader.vert",
+                "shaders/2D_fragment_shader.frag"
         );
         
         shaders_2D.bind_attribute(0, "position");
         shaders_2D.bind_attribute(1, "texture_coords");
         
         shaders_2D.finish_init();
-
-        shaders_2D.start();
         
         transformation_matrix_location_2D = shaders_2D.get_uniform_location(
                 "transformation_matrix");
@@ -176,8 +170,6 @@ public class Engine {
                 "texture_y");
         cell_size_location_2D = shaders_2D.get_uniform_location(
                 "cell_size");
-        
-        shaders_2D.stop();
         
         renderer = new Renderer(window);
 
@@ -374,10 +366,8 @@ public class Engine {
     public void destroy() {
         window.destroy();
         
-        shaders_3D.stop();
         shaders_3D.free();
         
-        shaders_2D.stop();
         shaders_2D.free();
     }
 }

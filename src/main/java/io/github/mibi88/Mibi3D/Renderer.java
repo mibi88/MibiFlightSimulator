@@ -206,7 +206,6 @@ public class Renderer {
         GL30.glBindVertexArray(image.get_vao());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
-        GL30.glEnableVertexAttribArray(2);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, image.texture_id);
     }
@@ -220,7 +219,6 @@ public class Renderer {
         image.unbind_texture();
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
-        GL30.glDisableVertexAttribArray(2);
     }
     
     /**
