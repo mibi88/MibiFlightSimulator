@@ -18,6 +18,7 @@
 package io.github.mibi88.Mibi3D;
 
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL30;
 
 /**
  * The class that combines all the components of the 3D engine
@@ -174,6 +175,9 @@ public class Engine {
         renderer = new Renderer(window);
 
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
+        
+        GL30.glBlendFunc(GL30.GL_SRC_ALPHA,
+                GL30.GL_ONE_MINUS_SRC_ALPHA);
     }
     
     /**

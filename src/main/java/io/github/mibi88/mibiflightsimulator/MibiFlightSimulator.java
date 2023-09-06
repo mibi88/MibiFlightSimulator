@@ -76,13 +76,13 @@ public class MibiFlightSimulator {
                     0);
             
             Image title_image = new Image("images/title.png",
-                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.FILTER_NEAREST,
                     Texture.WRAP_REPEAT, 1);
             
             ImageEntity title = engine.create_entity(title_image,
-                    1f, 0.5f,
+                    -1f, 1f,
                     0f,
-                    1f, 1f,
+                    2f, 2f,
                     0);
             
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
@@ -111,9 +111,9 @@ public class MibiFlightSimulator {
                 engine.render_entity(terrain);
                 engine.stop_using_model();
                 
-                engine.start_using_image(title_image);
+                /* engine.start_using_image(title_image);
                 engine.render_entity(title);
-                engine.stop_using_image();
+                engine.stop_using_image(); */
                 
                 window.update();
                 

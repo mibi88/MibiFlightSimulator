@@ -47,10 +47,10 @@ public class Image extends VAO {
     
     private void load_quad() {
         float[] vertices = {
-            -0.5f, 0.5f, // v0
-            -0.5f, -0.5f, // v1
-            0.5f, -0.5f, // v2
-            0.5f, 0.5f // v3
+            0f, 0f, // v0
+            0f, -1f, // v1
+            1f, -1f, // v2
+            1f, 0f // v3
         };
 
         int[] indices = {

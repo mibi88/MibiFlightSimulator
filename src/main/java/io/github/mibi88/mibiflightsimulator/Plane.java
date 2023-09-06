@@ -144,7 +144,5 @@ public class Plane {
         while(plane.rx < 0f) plane.rx = 360 - plane.rx;
         while(plane.ry < 0f) plane.ry = 360 - plane.ry;
         while(plane.rz < 0f) plane.rz = 360 - plane.rz;
-        
-        //System.out.println(speed);
     }
 }

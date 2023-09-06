@@ -209,6 +209,8 @@ public class Renderer {
         GL30.glEnableVertexAttribArray(1);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, image.texture_id);
+        GL30.glDisable(GL30.GL_DEPTH_TEST);
+        GL30.glEnable(GL30.GL_BLEND);
     }
     
     /**
@@ -220,6 +222,8 @@ public class Renderer {
         image.unbind_texture();
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
+        GL30.glEnable(GL30.GL_DEPTH_TEST);
+        GL30.glDisable(GL30.GL_BLEND);
     }
     
     /**
@@ -270,6 +274,10 @@ public class Renderer {
      */
     public void render_entity(Window window, ImageEntity entity) {
         Image image = entity.image;
+        
+        System.out.println(window.max_width);
+        System.out.println(window.max_height);
+        
         Matrix4f transformation_matrix = Maths.create_transformation_matrix(
                 new Vector2f(entity.x*window.max_width,
                         entity.y*window.max_height),
@@ -279,7 +287,7 @@ public class Renderer {
         );
         
         entity.shaders.load_in_uniform_var(
-                entity.transformation_matrix_location, 
+                entity.transformation_matrix_location,
                 transformation_matrix
         );
         
