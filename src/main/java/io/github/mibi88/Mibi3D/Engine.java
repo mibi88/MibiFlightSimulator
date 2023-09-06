@@ -36,6 +36,8 @@ public class Engine {
     private TexturedModel used_model;
     private Image used_image;
     
+    private Light light;
+    
     int transformation_matrix_location;
     int projection_matrix_location;
     int view_matrix_location;
@@ -151,7 +153,7 @@ public class Engine {
         cell_size_location = shaders_3D.get_uniform_location(
                 "cell_size");
         
-        //shaders_3D.stop();
+        shaders_3D.stop();
         
         shaders_2D = new Shaders(
                 "2D_vertex_shader.vert",
@@ -163,7 +165,7 @@ public class Engine {
         
         shaders_2D.finish_init();
 
-        //shaders_2D.start();
+        shaders_2D.start();
         
         transformation_matrix_location_2D = shaders_2D.get_uniform_location(
                 "transformation_matrix");
@@ -175,11 +177,9 @@ public class Engine {
         cell_size_location_2D = shaders_2D.get_uniform_location(
                 "cell_size");
         
-        //shaders_2D.stop();
+        shaders_2D.stop();
         
         renderer = new Renderer(window);
-        renderer.load_projection_matrix(projection_matrix_location,
-                shaders_3D);
 
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
     }
@@ -233,14 +233,12 @@ public class Engine {
     }
     
     /**
-     * Loads a light into the scene (currently only one light is supported, so
-     * calling this function multiple times just updates the light)
+     * Set the light to use to render the scene
      * 
-     * @param light The light to load
+     * @param light The light to use
      */
-    public void load_light(Light light) {
-        renderer.load_light(light_position_location,
-                light_color_location, light, shaders_3D);
+    public void set_light(Light light) {
+        this.light = light;
     }
     
     /**
@@ -292,14 +290,7 @@ public class Engine {
      * Prepare the engine to render a frame
      */
     public void init() {
-        shaders_3D.load_in_uniform_var(sky_color_location,
-                new Vector3f(r, g, b));
-        renderer.init(window, view_matrix_location, camera, shaders_3D,
-                r, g, b, ambient_lighting, ambient_lighting_location);
-        renderer.load_fog(fog_gradient, fog_density, fog,
-                fog_gradient_location,
-                fog_density_location, fog_location,
-                shaders_3D);
+        renderer.init(window, r, g, b);
     }
     
     /**
@@ -312,12 +303,32 @@ public class Engine {
                 reflectivity_location, shaders_3D);
         used_model = model;
         shaders_3D.start();
+        
+        renderer.load_shine_and_reflectivity(shine_damper_location,
+                reflectivity_location,
+                model.shine_damper,
+                model.reflectivity,
+                shaders_3D
+        );
+        shaders_3D.load_in_uniform_var(sky_color_location,
+                new Vector3f(r, g, b));
+        renderer.load_scene_settings(camera, ambient_lighting,
+                ambient_lighting_location, view_matrix_location,
+                shaders_3D);
+        renderer.load_light(light_position_location,
+                light_color_location, light, shaders_3D);
+        renderer.load_fog(fog_gradient, fog_density, fog,
+                fog_gradient_location,
+                fog_density_location, fog_location,
+                shaders_3D);
+        renderer.load_projection_matrix(projection_matrix_location,
+                shaders_3D);
     }
     
     /**
      * Prepare an image to be rendered
      * 
-     * @param model
+     * @param image
      */
     public void start_using_image(Image image) {
         renderer.start_using_image(image, shaders_2D);

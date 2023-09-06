@@ -87,10 +87,11 @@ public class MibiFlightSimulator {
             Keyboard keyboard = new Keyboard(window);
             Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
             
+            engine.set_light(light);
+            
             while(!window.quit_asked()) {
                 engine.init();
                 
-                engine.load_light(light);
                 engine.set_fog(keyboard.fog);
                 
                 if(keyboard.draw_plane) {
@@ -107,9 +108,9 @@ public class MibiFlightSimulator {
                 engine.render_entity(terrain);
                 engine.stop_using_model();
                 
-                /*engine.start_using_image(title_image);
+                engine.start_using_image(title_image);
                 engine.render_entity(title);
-                engine.stop_using_image();*/
+                engine.stop_using_image();
                 
                 window.update();
                 

@@ -131,25 +131,31 @@ public class Renderer {
      * vertices to the position of the camera, and clears the glfw window.
      * 
      * @param window The window to use the renderer on.
-     * @param view_matrix_location The location of the uniform variable that
-     * will contain the view matrix.
-     * @param camera The camera object to create the view matrix from.
-     * @param shaders The shader object that will be used to load the view
-     * matrix as a uniform variable to the shaders with the
-     * Shaders.get_uniform_location method.
      * @param r The red component of the sky color
      * @param g The green component of the sky color
      * @param b The blue component of the sky color
+     */
+    public void init(Window window, float r, float g, float b) {
+        GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+        GL30.glClearColor(r, g, b, 1f);
+    }
+    
+    /**
+     *
+     * @param camera The camera object to create the view matrix from.
      * @param ambient_lighting The amount of ambient lighting, a float between 0
      * and 1
      * @param ambient_lighting_location The location of the ambient lighting
      * uniform variable
+     * @param view_matrix_location The location of the uniform variable that
+     * will contain the view matrix.
+     * @param shaders The shader object that will be used to load the view
+     * matrix as a uniform variable to the shaders with the
+     * Shaders.get_uniform_location method.
      */
-    public void init(Window window, int view_matrix_location, Camera camera,
-            Shaders shaders, float r, float g, float b,
-            float ambient_lighting, int ambient_lighting_location) {
-        GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
-        GL30.glClearColor(r, g, b, 1f);
+    public void load_scene_settings(Camera camera, float ambient_lighting,
+            int ambient_lighting_location, int view_matrix_location,
+            Shaders shaders) {
         Matrix4f view_matrix = Maths.create_view_matrix(camera);
         shaders.load_in_uniform_var(view_matrix_location,
                 view_matrix);
@@ -176,12 +182,6 @@ public class Renderer {
         GL30.glEnableVertexAttribArray(2);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
-        load_shine_and_reflectivity(shine_damper_location,
-                reflectivity_location,
-                model.shine_damper,
-                model.reflectivity,
-                shaders
-        );
     }
     
     /**
