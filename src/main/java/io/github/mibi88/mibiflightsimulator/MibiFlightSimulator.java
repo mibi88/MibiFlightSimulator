@@ -61,17 +61,19 @@ public class MibiFlightSimulator {
                     -77
             );
             
-            ModelEntity player = engine.create_entity(plane, 0f, 64f,
-                    0f, 0f, 0f, 0f, 1f, 0);
+            TexturedModelEntity player = engine.create_entity(plane, 0f,
+                    64f, 0f, 0f, 0f, 0f, 1f, 0);
             
             Camera camera = engine.get_camera();
             
             Plane movement = new Plane(camera);
             
-            ModelEntity terrain = engine.create_entity(terrain_model,
-                    1024f*8f/2f, 0f, 0f, 0f, 0f, 0f, 1f,
-                    0);
-            ModelEntity sun = engine.create_entity(sun_model,
+            TexturedModelEntity terrain = engine.create_entity(
+                    terrain_model, 1024f*8f/2f, 0f, 0f,
+                    0f, 0f, 0f, 1f,
+                    0
+            );
+            TexturedModelEntity sun = engine.create_entity(sun_model,
                     0f, 70f, 0f, 0f, 0f, 0f, 1f,
                     0);
             
@@ -92,28 +94,21 @@ public class MibiFlightSimulator {
             
             engine.set_light(light);
             
+            //engine.add_entity(player);
+            engine.add_entity(sun);
+            engine.add_entity(terrain);
+            //engine.add_entity(title);
+            
             while(!window.quit_asked()) {
                 engine.init();
                 
                 engine.set_fog(keyboard.fog);
                 
                 if(keyboard.draw_plane) {
-                    engine.start_using_model(plane);
-                    engine.render_entity(player);
-                    engine.stop_using_model();
+                    // TODO : Display plane if needed
                 }
                 
-                engine.start_using_model(sun_model);
-                engine.render_entity(sun);
-                engine.stop_using_model();
-                
-                engine.start_using_model(terrain_model);
-                engine.render_entity(terrain);
-                engine.stop_using_model();
-                
-                /* engine.start_using_image(title_image);
-                engine.render_entity(title);
-                engine.stop_using_image(); */
+                engine.render_scene();
                 
                 window.update();
                 

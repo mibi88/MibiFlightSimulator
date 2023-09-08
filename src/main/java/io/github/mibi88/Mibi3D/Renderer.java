@@ -174,13 +174,29 @@ public class Renderer {
      * variable
      * @param shaders The Shaders object to use
      */
-    public void start_using_model(TexturedModel model,
-            int shine_damper_location, int reflectivity_location,
-            Shaders shaders) {
+    public void start_using_model(Model model, int shine_damper_location,
+            int reflectivity_location, Shaders shaders) {
         GL30.glBindVertexArray(model.get_vao());
         GL30.glEnableVertexAttribArray(0);
         GL30.glEnableVertexAttribArray(1);
         GL30.glEnableVertexAttribArray(2);
+    }
+    
+    /**
+     * Start drawing entities of a model
+     * 
+     * @param model The model that will be used to draw the next entities
+     * @param shine_damper_location The location of the shine damper uniform
+     * variable
+     * @param reflectivity_location The location of the reflectivity uniform
+     * variable
+     * @param shaders The Shaders object to use
+     */
+    public void start_using_model(TexturedModel model,
+            int shine_damper_location, int reflectivity_location,
+            Shaders shaders) {
+        start_using_model((Model)model, shine_damper_location,
+            reflectivity_location, shaders);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
         GL30.glBindTexture(GL30.GL_TEXTURE_2D, model.texture_id);
     }
@@ -190,11 +206,20 @@ public class Renderer {
      * 
      * @param model The model that was used to render the entities
      */
-    public void stop_using_model(TexturedModel model) {
-        model.unbind_texture();
+    public void stop_using_model(Model model) {
         GL30.glDisableVertexAttribArray(0);
         GL30.glDisableVertexAttribArray(1);
         GL30.glDisableVertexAttribArray(2);
+    }
+    
+    /**
+     * Stop using a model to render entities
+     * 
+     * @param model The model that was used to render the entities
+     */
+    public void stop_using_model(TexturedModel model) {
+        model.unbind_texture();
+        stop_using_model((Model)model);
     }
     
     /**
@@ -231,7 +256,7 @@ public class Renderer {
      * 
      * @param entity The entity to draw on screen.
      */
-    public void render_entity(ModelEntity entity) {
+    public void render_entity(TexturedModelEntity entity) {
         TexturedModel model = entity.model;
         Matrix4f transformation_matrix = Maths.create_transformation_matrix(
                 new Vector3f(entity.x, entity.y, entity.z),

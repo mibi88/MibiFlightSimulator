@@ -17,6 +17,10 @@
  */
 package io.github.mibi88.Mibi3D;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
@@ -36,6 +40,10 @@ public class Engine {
     
     private TexturedModel used_model;
     private Image used_image;
+    
+    private LinkedHashMap<TexturedModel, ArrayList<TexturedModelEntity>>
+            textured_model_entities;
+    private LinkedHashMap<Image, ArrayList<ImageEntity>> image_entities;
     
     private Light light;
     
@@ -178,6 +186,9 @@ public class Engine {
         
         GL30.glBlendFunc(GL30.GL_SRC_ALPHA,
                 GL30.GL_ONE_MINUS_SRC_ALPHA);
+        
+        textured_model_entities = new LinkedHashMap<>();
+        image_entities = new LinkedHashMap<>();
     }
     
     /**
@@ -251,9 +262,9 @@ public class Engine {
      * @param texture_num The number of the texture in the texture atlas to use
      * @return A new Entity object
      */
-    public ModelEntity create_entity(TexturedModel model, float x, float y, float z,
+    public TexturedModelEntity create_entity(TexturedModel model, float x, float y, float z,
             float rx, float ry, float rz, float scale, int texture_num) {
-        return new ModelEntity(model, x, y, z, rx, ry, rz, scale,
+        return new TexturedModelEntity(model, x, y, z, rx, ry, rz, scale,
                 shaders_3D, transformation_matrix_location, texture_num,
                 texture_x_location, texture_y_location, cell_size_location);
     }
@@ -290,11 +301,124 @@ public class Engine {
     }
     
     /**
+     * Clear the list of entities
+     */
+    public void clear_entity_list() {
+        textured_model_entities.clear();
+        image_entities.clear();
+    }
+    
+    /**
+     * Add an entity to the entities list
+     * 
+     * @param entity The entity to add
+     */
+    public void add_entity(TexturedModelEntity entity) {
+        if(textured_model_entities.get(entity.model) != null) {
+            textured_model_entities.get(entity.model).add(entity);
+        } else {
+            ArrayList<TexturedModelEntity> entities = new ArrayList<>();
+            entities.add(entity);
+            textured_model_entities.put(entity.model, entities);
+        }
+    }
+    
+    /**
+     * Add an entity to the entities list
+     * 
+     * @param entity The entity to add
+     */
+    public void add_entity(ImageEntity entity) {
+        if(image_entities.get(entity.image) != null) {
+            image_entities.get(entity.image).add(entity);
+        } else {
+            ArrayList<ImageEntity> entities = new ArrayList<>();
+            entities.add(entity);
+            image_entities.put(entity.image, entities);
+        }
+    }
+    
+    /**
+     * Remove an entity from the entities list
+     * 
+     * @param entity The entity to remove
+     * @return False on success, or true on failure
+     */
+    public boolean remove_entity(TexturedModelEntity entity) {
+        if(textured_model_entities.containsKey(entity.model)) {
+            ArrayList<TexturedModelEntity> entities =
+                    textured_model_entities.get(entity.model);
+            entities.remove(entity);
+            if(entities.size() < 1) {
+                textured_model_entities.remove(entity.model);
+            }
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Remove an entity from the entities list
+     * 
+     * @param entity The entity to remove
+     * @return False on success, or true on failure
+     */
+    public boolean remove_entity(ImageEntity entity) {
+        if(image_entities.containsKey(entity.image)) {
+            ArrayList<ImageEntity> entities =
+                    image_entities.get(entity.image);
+            entities.remove(entity);
+            if(entities.size() < 1) {
+                image_entities.remove(entity.image);
+            }
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Render all textured models
+     */
+    private void render_textured_models() {
+        for(TexturedModel model : textured_model_entities.keySet()) {
+            ArrayList<TexturedModelEntity> list =
+                    textured_model_entities.get(model);
+            start_using_model(model);
+            for(TexturedModelEntity entity : list) {
+                render_entity(entity);
+            }
+            stop_using_model();
+        }
+    }
+    
+    /**
+     * Render all the images of the scene
+     */
+    private void render_images() {
+        for(Image image : image_entities.keySet()) {
+            ArrayList<ImageEntity> list = image_entities.get(image);
+            start_using_image(image);
+            for(ImageEntity entity : list) {
+                render_entity(entity);
+            }
+            stop_using_image();
+        }
+    }
+    
+    /**
+     * Render the scene
+     */
+    public void render_scene() {
+        render_textured_models();
+        render_images();
+    }
+    
+    /**
      * Prepare a model to be rendered
      * 
      * @param model
      */
-    public void start_using_model(TexturedModel model) {
+    private void start_using_model(TexturedModel model) {
         renderer.start_using_model(model, shine_damper_location,
                 reflectivity_location, shaders_3D);
         used_model = model;
@@ -326,7 +450,7 @@ public class Engine {
      * 
      * @param image
      */
-    public void start_using_image(Image image) {
+    private void start_using_image(Image image) {
         renderer.start_using_image(image, shaders_2D);
         used_image = image;
         shaders_2D.start();
@@ -335,14 +459,14 @@ public class Engine {
     /**
      * Stop rendering this model
      */
-    public void stop_using_model() {
+    private void stop_using_model() {
         renderer.stop_using_model(used_model);
     }
     
     /**
      * Stop rendering this image
      */
-    public void stop_using_image() {
+    private void stop_using_image() {
         renderer.stop_using_image(used_image);
     }
     
@@ -351,7 +475,7 @@ public class Engine {
      * 
      * @param entity The entity to render
      */
-    public void render_entity(ModelEntity entity) {
+    private void render_entity(TexturedModelEntity entity) {
         renderer.render_entity(entity);
     }
     
@@ -360,7 +484,7 @@ public class Engine {
      * 
      * @param entity The entity to render
      */
-    public void render_entity(ImageEntity entity) {
+    private void render_entity(ImageEntity entity) {
         renderer.render_entity(window, entity);
     }
     
