@@ -56,6 +56,17 @@ public class MibiFlightSimulator {
             sun_model.shine_damper = 10f;
             sun_model.reflectivity = 1f;
             
+            TexturedModel street_lamp = new TexturedModel(
+                    "models/street_lamp.obj",
+                    0,
+                    "models/street_lamp.png",
+                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.WRAP_REPEAT,
+                    4f, 1
+            );
+            street_lamp.shine_damper = 10f;
+            street_lamp.reflectivity = 1f;
+            
             TexturedModel terrain_model = Terrain.generate_terrain(
                     1024, 1024, 8f, "models/grass.png",
                     -77
@@ -77,6 +88,10 @@ public class MibiFlightSimulator {
                     0f, 70f, 0f, 0f, 0f, 0f, 1f,
                     0);
             
+            TexturedModelEntity lamp1 = engine.create_entity(street_lamp,
+                    0f, 64f, -60f, 0f, 0f, 0f, 1f,
+                    0);
+            
             Image title_image = new Image("images/title.png",
                     Texture.FILTER_NEAREST,
                     Texture.WRAP_REPEAT, 1);
@@ -95,14 +110,19 @@ public class MibiFlightSimulator {
             wing_light1.exponential_attenuation = 0.1f;
             Light wing_light2 = new Light(0f, 0f, 0f, 1f, 0f, 0f);
             wing_light2.exponential_attenuation = 0.1f;
+            Light lamp1_light = new Light(lamp1.x, lamp1.y+6.0849f, lamp1.z,
+                    1f, 0f, 0f);
+            wing_light2.exponential_attenuation = 0.2f;
             
             engine.add_light(sun_light);
             engine.add_light(wing_light1);
             engine.add_light(wing_light2);
+            engine.add_light(lamp1_light);
             
             //engine.add_entity(player);
             engine.add_entity(sun);
             engine.add_entity(terrain);
+            engine.add_entity(lamp1);
             //engine.add_entity(title);
             
             while(!window.quit_asked()) {
