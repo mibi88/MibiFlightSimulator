@@ -24,6 +24,9 @@ package io.github.mibi88.Mibi3D;
 public class Light {
     public float x, y, z;
     public float r, g, b;
+    
+    public float constant_attenuation, linear_attenuation,
+            exponential_attenuation;
 
     /**
      * Create a new light
@@ -45,5 +48,9 @@ public class Light {
         this.r = r;
         this.g = g;
         this.b = b;
+        
+        constant_attenuation = 1f;
+        linear_attenuation = 0f;
+        exponential_attenuation = 0f;
     }
 }

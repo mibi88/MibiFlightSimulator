@@ -37,7 +37,7 @@ public class Terrain {
                 height_down-height_up);
         normal.normalize();
         //return new float[]{normal.x, normal.y, normal.z};
-        return new float[]{0, 0, 0};
+        return new float[]{0f, 1f, 0f};
     }
     public static float get_height(float x, float y, int seed, int w, int h) {
         return STBPerlin.stb_perlin_noise3_seed(x*0.1f,

@@ -72,15 +72,25 @@ public class Renderer {
      * will contain the position of the light
      * @param light_color_location The location of the uniform variable that
      * will contain the color of the light
+     * @param attenuation_location
      * @param light The Light object
      * @param shaders The Shaders object to load the light to
      */
     public void load_light(int light_position_location,
-            int light_color_location, Light light, Shaders shaders) {
+            int light_color_location, int attenuation_location, Light light,
+            Shaders shaders) {
         shaders.load_in_uniform_var(light_position_location,
                 new Vector3f(light.x, light.y, light.z));
         shaders.load_in_uniform_var(light_color_location,
                 new Vector3f(light.r, light.g, light.b));
+        
+        shaders.load_in_uniform_var(attenuation_location,
+                new Vector3f(
+                        light.constant_attenuation,
+                        light.linear_attenuation,
+                        light.exponential_attenuation
+                )
+        );
     }
     
     /**

@@ -90,9 +90,15 @@ public class MibiFlightSimulator {
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             
             Keyboard keyboard = new Keyboard(window);
-            Light light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
+            Light sun_light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
+            Light wing_light1 = new Light(0f, 0f, 0f, 1f, 0f, 0f);
+            wing_light1.exponential_attenuation = 0.1f;
+            Light wing_light2 = new Light(0f, 0f, 0f, 1f, 0f, 0f);
+            wing_light2.exponential_attenuation = 0.1f;
             
-            engine.set_light(light);
+            engine.add_light(sun_light);
+            engine.add_light(wing_light1);
+            engine.add_light(wing_light2);
             
             //engine.add_entity(player);
             engine.add_entity(sun);
@@ -145,8 +151,16 @@ public class MibiFlightSimulator {
                 player.y = camera.y;
                 player.z = camera.z;
                 
-                light.x = camera.x;
-                light.z = camera.z;
+                sun_light.x = camera.x;
+                sun_light.z = camera.z;
+                
+                wing_light1.x = camera.x;
+                wing_light1.y = camera.y+1;
+                wing_light1.z = camera.z;
+                
+                wing_light2.x = camera.x;
+                wing_light2.y = camera.y-1;
+                wing_light2.z = camera.z;
                 
                 sun.x = camera.x;
                 sun.y = camera.y+15f;

@@ -18,8 +18,6 @@
 package io.github.mibi88.Mibi3D;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
@@ -41,18 +39,22 @@ public class Engine {
     private TexturedModel used_model;
     private Image used_image;
     
-    private LinkedHashMap<TexturedModel, ArrayList<TexturedModelEntity>>
+    private final LinkedHashMap<TexturedModel, ArrayList<TexturedModelEntity>>
             textured_model_entities;
-    private LinkedHashMap<Image, ArrayList<ImageEntity>> image_entities;
+    private final LinkedHashMap<Image, ArrayList<ImageEntity>> image_entities;
     
-    private Light light;
+    private final int MAX_LIGHTS = 16;
+    
+    private ArrayList<Light> lights;
     
     int transformation_matrix_location;
     int projection_matrix_location;
     int view_matrix_location;
     
-    int light_position_location;
-    int light_color_location;
+    int[] light_position_location;
+    int[] light_color_location;
+    
+    int[] attenuation_location;
     
     int shine_damper_location;
     int reflectivity_location;
@@ -132,10 +134,18 @@ public class Engine {
         view_matrix_location = shaders_3D.get_uniform_location(
                 "view_matrix");
 
-        light_position_location = shaders_3D.get_uniform_location(
-                "light_position");
-        light_color_location = shaders_3D.get_uniform_location(
-                "light_color");
+        light_position_location = new int[MAX_LIGHTS];
+        light_color_location = new int[MAX_LIGHTS];
+        attenuation_location = new int[MAX_LIGHTS];
+        
+        for(int i=0;i<MAX_LIGHTS;i++) {
+            light_position_location[i] = shaders_3D.get_uniform_location(
+                    "light_position["+i+"]");
+            light_color_location[i] = shaders_3D.get_uniform_location(
+                    "light_color["+i+"]");
+            attenuation_location[i] = shaders_3D.get_uniform_location(
+                    "attenuation["+i+"]");
+        }
 
         shine_damper_location = shaders_3D.get_uniform_location(
                 "shine_damper");
@@ -189,6 +199,8 @@ public class Engine {
         
         textured_model_entities = new LinkedHashMap<>();
         image_entities = new LinkedHashMap<>();
+        
+        lights = new ArrayList<>();
     }
     
     /**
@@ -240,12 +252,32 @@ public class Engine {
     }
     
     /**
-     * Set the light to use to render the scene
+     * Add a light to the scene
      * 
-     * @param light The light to use
+     * @param light The light to add
      */
-    public void set_light(Light light) {
-        this.light = light;
+    public void add_light(Light light) {
+        if(!lights.contains(light) && lights.size() < MAX_LIGHTS-1) {
+            lights.add(light);
+        }
+    }
+    
+    /**
+     * Remove a light from the scene
+     * 
+     * @param light The light to remove
+     */
+    public void remove_light(Light light) {
+        if(lights.contains(light)) {
+            lights.remove(light);
+        }
+    }
+    
+    /**
+     * Remove all the lights from the scene
+     */
+    public void remove_all_lights() {
+        lights.clear();
     }
     
     /**
@@ -262,8 +294,9 @@ public class Engine {
      * @param texture_num The number of the texture in the texture atlas to use
      * @return A new Entity object
      */
-    public TexturedModelEntity create_entity(TexturedModel model, float x, float y, float z,
-            float rx, float ry, float rz, float scale, int texture_num) {
+    public TexturedModelEntity create_entity(TexturedModel model, float x,
+            float y, float z, float rx, float ry, float rz, float scale,
+            int texture_num) {
         return new TexturedModelEntity(model, x, y, z, rx, ry, rz, scale,
                 shaders_3D, transformation_matrix_location, texture_num,
                 texture_x_location, texture_y_location, cell_size_location);
@@ -435,8 +468,21 @@ public class Engine {
         renderer.load_scene_settings(camera, ambient_lighting,
                 ambient_lighting_location, view_matrix_location,
                 shaders_3D);
-        renderer.load_light(light_position_location,
-                light_color_location, light, shaders_3D);
+        for(int i=0;i<MAX_LIGHTS;i++) {
+            if(i<lights.size()) {
+                renderer.load_light(light_position_location[i],
+                        light_color_location[i], attenuation_location[i],
+                        lights.get(i), shaders_3D);
+            } else {
+                shaders_3D.load_in_uniform_var(attenuation_location[i],
+                        new Vector3f(
+                                1,
+                                0,
+                                0
+                        )
+                );
+            }
+        }
         renderer.load_fog(fog_gradient, fog_density, fog,
                 fog_gradient_location,
                 fog_density_location, fog_location,
