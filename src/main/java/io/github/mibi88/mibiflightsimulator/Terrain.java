@@ -27,7 +27,10 @@ import org.lwjgl.stb.STBPerlin;
  * @author mibi88
  */
 public class Terrain {
-    public static float[] generate_normals(float x, float y, float z,
+    float[] vertices;
+    float step;
+    
+    public float[] generate_normals(float x, float y, float z,
             int seed, int w, int h) {
         float height_left = get_height(x-1, z, seed, w, h);
         float height_right = get_height(x+1, z, seed, w, h);
@@ -39,7 +42,7 @@ public class Terrain {
         //return new float[]{normal.x, normal.y, normal.z};
         return new float[]{0f, 1f, 0f};
     }
-    public static float get_height(float x, float y, int seed, int w, int h) {
+    public float get_height(float x, float y, int seed, int w, int h) {
         return STBPerlin.stb_perlin_noise3_seed(x*0.1f,
                 y*0.1f,
                 0,
@@ -49,7 +52,7 @@ public class Terrain {
                 seed)*64f;
     }
     
-    public static void print_array(float[] array, String end) {
+    public void print_array(float[] array, String end) {
         for(int i=0;i<array.length;i++) {
             if(i == array.length-1) {
                 System.out.printf("%f", array[i]);
@@ -59,7 +62,7 @@ public class Terrain {
         }
         System.out.print(end);
     }
-    public static void print_array(int[] array, String end) {
+    public void print_array(int[] array, String end) {
         for(int i=0;i<array.length;i++) {
             if(i == array.length-1) {
                 System.out.printf("%d", array[i]);
@@ -70,11 +73,12 @@ public class Terrain {
         System.out.print(end);
     }
     
-    public static TexturedModel generate_terrain(int w, int h, float step,
+    public TexturedModel generate_terrain(int w, int h, float step,
             String texture_file, int seed) throws Exception {
         w++;
         h++;
-        float[] vertices = new float[w*h*3];
+        this.step = step;
+        vertices = new float[w*h*3];
         float[] texture_coords = new float[w*h*2];
         float[] normals = new float[w*h*3];
         int[] indices = new int[(w-1)*(h-1)*6];
@@ -119,5 +123,9 @@ public class Terrain {
                 texture_file, Texture.FILTER_MIPMAP_LINEAR,
                 Texture.WRAP_REPEAT, 4,
                 1);
+    }
+    
+    public void get_height_at_pos(float x, float y) {
+        //
     }
 }

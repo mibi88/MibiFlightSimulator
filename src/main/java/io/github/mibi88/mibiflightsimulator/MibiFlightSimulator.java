@@ -67,7 +67,8 @@ public class MibiFlightSimulator {
             street_lamp.shine_damper = 10f;
             street_lamp.reflectivity = 1f;
             
-            TexturedModel terrain_model = Terrain.generate_terrain(
+            Terrain terrain_generator = new Terrain();
+            TexturedModel terrain_model = terrain_generator.generate_terrain(
                     1024, 1024, 8f, "models/grass.png",
                     -77
             );
@@ -89,7 +90,7 @@ public class MibiFlightSimulator {
                     0);
             
             TexturedModelEntity lamp1 = engine.create_entity(street_lamp,
-                    0f, 64f, -60f, 0f, 0f, 0f, 1f,
+                    0f, 64f, -20f, 0f, 0f, 0f, 1f,
                     0);
             
             Image title_image = new Image("images/title.png",
@@ -106,17 +107,11 @@ public class MibiFlightSimulator {
             
             Keyboard keyboard = new Keyboard(window);
             Light sun_light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
-            Light wing_light1 = new Light(0f, 0f, 0f, 1f, 0f, 0f);
-            wing_light1.exponential_attenuation = 0.1f;
-            Light wing_light2 = new Light(0f, 0f, 0f, 1f, 0f, 0f);
-            wing_light2.exponential_attenuation = 0.1f;
             Light lamp1_light = new Light(lamp1.x, lamp1.y+6.0849f, lamp1.z,
-                    1f, 0f, 0f);
-            wing_light2.exponential_attenuation = 0.2f;
+                    1f, 1f, 1f);
+            lamp1_light.exponential_attenuation = 0.1f;
             
             engine.add_light(sun_light);
-            engine.add_light(wing_light1);
-            engine.add_light(wing_light2);
             engine.add_light(lamp1_light);
             
             //engine.add_entity(player);
@@ -173,14 +168,6 @@ public class MibiFlightSimulator {
                 
                 sun_light.x = camera.x;
                 sun_light.z = camera.z;
-                
-                wing_light1.x = camera.x;
-                wing_light1.y = camera.y+1;
-                wing_light1.z = camera.z;
-                
-                wing_light2.x = camera.x;
-                wing_light2.y = camera.y-1;
-                wing_light2.z = camera.z;
                 
                 sun.x = camera.x;
                 sun.y = camera.y+15f;
