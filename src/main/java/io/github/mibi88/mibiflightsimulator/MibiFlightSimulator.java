@@ -70,7 +70,8 @@ public class MibiFlightSimulator {
             Terrain terrain_generator = new Terrain();
             TexturedModel terrain_model = terrain_generator.generate_terrain(
                     1024, 1024, 8f, "models/grass.png",
-                    -77
+                    -77, 32, 64, street_lamp,
+                    engine
             );
             
             TexturedModelEntity player = engine.create_entity(plane, 0f,
@@ -89,10 +90,6 @@ public class MibiFlightSimulator {
                     0f, 70f, 0f, 0f, 0f, 0f, 1f,
                     0);
             
-            TexturedModelEntity lamp1 = engine.create_entity(street_lamp,
-                    0f, 64f, -20f, 0f, 0f, 0f, 1f,
-                    0);
-            
             Image title_image = new Image("images/title.png",
                     Texture.FILTER_NEAREST,
                     Texture.WRAP_REPEAT, 1);
@@ -107,17 +104,26 @@ public class MibiFlightSimulator {
             
             Keyboard keyboard = new Keyboard(window);
             Light sun_light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
-            Light lamp1_light = new Light(lamp1.x, lamp1.y+6.0849f, lamp1.z,
-                    1f, 1f, 1f);
-            lamp1_light.exponential_attenuation = 0.1f;
             
             engine.add_light(sun_light);
-            engine.add_light(lamp1_light);
             
             //engine.add_entity(player);
             engine.add_entity(sun);
             engine.add_entity(terrain);
-            engine.add_entity(lamp1);
+            
+            // Add the street lamps
+            for(int i=0;i<terrain_generator.street_lamps.length;i++) {
+                if(terrain_generator.street_lamps[i] != null) {
+                    terrain_generator.street_lamps[i].x -= terrain.x;
+                    terrain_generator.street_lamps[i].y += terrain.y;
+                    terrain_generator.street_lamps[i].z += terrain.z;
+
+                    engine.add_entity(terrain_generator.street_lamps[i]);
+                } else {
+                    System.out.println("Lamp is null");
+                }
+            }
+            
             //engine.add_entity(title);
             
             while(!window.quit_asked()) {
@@ -182,6 +188,7 @@ public class MibiFlightSimulator {
             plane.free();
             terrain_model.free();
         } catch (Exception exception) {
+            exception.printStackTrace();
             System.out.println(exception.getMessage());
         }
     }

@@ -17,8 +17,12 @@
  */
 package io.github.mibi88.mibiflightsimulator;
 
+import io.github.mibi88.Mibi3D.Engine;
+import io.github.mibi88.Mibi3D.Shaders;
 import io.github.mibi88.Mibi3D.Texture;
 import io.github.mibi88.Mibi3D.TexturedModel;
+import io.github.mibi88.Mibi3D.TexturedModelEntity;
+import java.util.Random;
 import org.joml.Vector3f;
 import org.lwjgl.stb.STBPerlin;
 
@@ -27,8 +31,13 @@ import org.lwjgl.stb.STBPerlin;
  * @author mibi88
  */
 public class Terrain {
-    float[] vertices;
-    float step;
+    private float[] vertices;
+    private float[] heights;
+    private float step;
+    private int w, h;
+    
+    public TexturedModelEntity street_lamps[];
+    public int lamp_x_amount, lamp_y_amount;
     
     public float[] generate_normals(float x, float y, float z,
             int seed, int w, int h) {
@@ -74,11 +83,20 @@ public class Terrain {
     }
     
     public TexturedModel generate_terrain(int w, int h, float step,
-            String texture_file, int seed) throws Exception {
+            String texture_file, int seed, int min_lamp_spacing,
+            int max_lamp_spacing, TexturedModel street_lamp, Engine engine)
+            throws Exception {
         w++;
         h++;
+        this.w = w;
+        this.h = h;
         this.step = step;
         vertices = new float[w*h*3];
+        heights = new float[w*h];
+        lamp_x_amount = (w*(int)step/max_lamp_spacing);
+        lamp_y_amount = (h*(int)step/max_lamp_spacing);
+        street_lamps = new TexturedModelEntity[lamp_x_amount*lamp_y_amount];
+        Random random = new Random(seed);
         float[] texture_coords = new float[w*h*2];
         float[] normals = new float[w*h*3];
         int[] indices = new int[(w-1)*(h-1)*6];
@@ -86,6 +104,7 @@ public class Terrain {
             for(int x=0;x<w;x++) {
                 vertices[(y*w+x)*3] = -x*step;
                 vertices[(y*w+x)*3+1] = get_height(x, y, seed, w, h);
+                heights[y*w+x] = vertices[(y*w+x)*3+1];
                 vertices[(y*w+x)*3+2] = -y*step;
                 float[] normal = generate_normals(
                         vertices[(y*w+x)*3],
@@ -119,13 +138,36 @@ public class Terrain {
         // print_array(texture_coords, "\n");
         // print_array(normals, "\n");
         // print_array(indices, "\n");
+        
+        float x = 0f, y = 0f;
+        for(int int_y=0;int_y<lamp_y_amount;int_y++) {
+            for(int int_x=0;int_x<lamp_x_amount;int_x++) {
+                x = min_lamp_spacing + random.nextFloat() *
+                        (max_lamp_spacing-min_lamp_spacing) +
+                        int_x*max_lamp_spacing;
+                y = min_lamp_spacing + random.nextFloat() *
+                        (max_lamp_spacing-min_lamp_spacing) +
+                        int_y*max_lamp_spacing;
+                street_lamps[int_y*lamp_x_amount+int_x] =
+                        engine.create_entity(street_lamp,
+                        x, get_height_at_pos(x, y), -y,
+                        0f, 0f, 0f, 1f, 0);
+            }
+        }
+        
         return new TexturedModel(vertices, indices, normals, texture_coords,
                 texture_file, Texture.FILTER_MIPMAP_LINEAR,
                 Texture.WRAP_REPEAT, 4,
                 1);
     }
     
-    public void get_height_at_pos(float x, float y) {
-        //
+    public float get_height_at_pos(float x, float y) {
+        int int_x = (int)(x/step), int_y = (int)(y/step);
+        int pos = int_y*w+int_x;
+        if(pos < 0 || pos >= heights.length) {
+            System.out.println("WTF! It's out of bounds!");
+            return 0f;
+        }
+        return heights[pos];
     }
 }
