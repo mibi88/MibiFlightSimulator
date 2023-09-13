@@ -163,12 +163,19 @@ public class Terrain {
     
     public float get_height_at_pos(float x, float y) {
         x = (w*step)-x;
-        int int_x = Math.round(x/step), int_y = Math.round(y/step);
-        int pos = int_y*w+int_x;
-        if(pos < 0 || pos >= heights.length) {
-            System.out.println("WTF! It's out of bounds!");
-            return 0f;
+        float final_height = 0f;
+        for(int i=0;i<4;i++) {
+            int int_x = (int)(x/step)+((i%2)*2-1),
+                    int_y = (int)(y/step)+(i/2*2-1);
+            int pos = int_y*w+int_x;
+            float height = 0f;
+            if(pos < 0 || pos >= heights.length) {
+                System.out.println("WTF! It's out of bounds!");
+                continue;
+            }
+            height = heights[pos];
+            final_height += height;
         }
-        return heights[pos];
+        return final_height/4;
     }
 }
