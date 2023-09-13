@@ -162,7 +162,8 @@ public class Terrain {
     }
     
     public float get_height_at_pos(float x, float y) {
-        int int_x = (int)(x/step), int_y = (int)(y/step);
+        x = (w*step)-x;
+        int int_x = Math.round(x/step), int_y = Math.round(y/step);
         int pos = int_y*w+int_x;
         if(pos < 0 || pos >= heights.length) {
             System.out.println("WTF! It's out of bounds!");
