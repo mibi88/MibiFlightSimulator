@@ -64,13 +64,25 @@ public class MibiFlightSimulator {
                     Texture.WRAP_REPEAT,
                     4f, 1
             );
+            TexturedModel tree = new TexturedModel(
+                    "models/tree.obj",
+                    0,
+                    "models/tree.png",
+                    Texture.FILTER_MIPMAP_LINEAR,
+                    Texture.WRAP_REPEAT,
+                    4f, 1
+            );
             street_lamp.shine_damper = 10f;
             street_lamp.reflectivity = 1f;
             
             Terrain terrain_generator = new Terrain();
             TexturedModel terrain_model = terrain_generator.generate_terrain(
-                    1024, 1024, 8f, "models/grass.png",
-                    -77, 32, 64, street_lamp,
+                    1024, 1024, 8f,
+                    "models/grass.png",
+                    -77,
+                    32, 64,
+                    6, 32,
+                    street_lamp, tree,
                     engine
             );
             
@@ -111,16 +123,16 @@ public class MibiFlightSimulator {
             engine.add_entity(sun);
             engine.add_entity(terrain);
             
-            // Add the street lamps
-            for(int i=0;i<terrain_generator.street_lamps.length;i++) {
-                if(terrain_generator.street_lamps[i] != null) {
-                    terrain_generator.street_lamps[i].x -= terrain.x;
-                    terrain_generator.street_lamps[i].y += terrain.y;
-                    terrain_generator.street_lamps[i].z += terrain.z;
+            // Add the entities that are a part of the map
+            for(int i=0;i<terrain_generator.entities.length;i++) {
+                if(terrain_generator.entities[i] != null) {
+                    terrain_generator.entities[i].x -= terrain.x;
+                    terrain_generator.entities[i].y += terrain.y;
+                    terrain_generator.entities[i].z += terrain.z;
 
-                    engine.add_entity(terrain_generator.street_lamps[i]);
+                    engine.add_entity(terrain_generator.entities[i]);
                 } else {
-                    System.out.println("Lamp is null");
+                    System.out.println("Entity is null");
                 }
             }
             

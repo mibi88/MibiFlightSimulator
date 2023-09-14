@@ -36,6 +36,8 @@ public class Window {
     
     protected float max_width, max_height;
     
+    private boolean wireframe;
+    
     /**
      * Create a new window
      * 
@@ -95,7 +97,21 @@ public class Window {
         GL30.glCullFace(GL30.GL_BACK);
         if(multisample > 1) GL30.glEnable(GL30.GL_MULTISAMPLE);
         
+        GL30.glPolygonMode(GL30.GL_FRONT_AND_BACK, GL30.GL_FILL);
         update_gl_viewport();
+        
+        wireframe = false;
+    }
+    
+    public void toggle_wireframe() {
+        if(wireframe) {
+            GL30.glPolygonMode(GL30.GL_FRONT_AND_BACK, GL30.GL_FILL);
+            GL30.glEnable(GL30.GL_CULL_FACE);
+        } else {
+            GL30.glPolygonMode(GL30.GL_FRONT_AND_BACK, GL30.GL_LINE);
+            GL30.glDisable(GL30.GL_CULL_FACE);
+        }
+        wireframe = !wireframe;
     }
     
     /**

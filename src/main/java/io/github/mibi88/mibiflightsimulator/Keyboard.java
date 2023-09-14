@@ -44,6 +44,9 @@ public class Keyboard {
             if(scancode == 41 && action == GLFW.GLFW_RELEASE) {
                 fog = !fog;
             }
+            if(scancode == 52 && action == GLFW.GLFW_RELEASE) {
+                window.toggle_wireframe();
+            }
         });
     }
     

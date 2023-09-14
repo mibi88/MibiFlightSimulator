@@ -18,7 +18,6 @@
 package io.github.mibi88.mibiflightsimulator;
 
 import io.github.mibi88.Mibi3D.Engine;
-import io.github.mibi88.Mibi3D.Shaders;
 import io.github.mibi88.Mibi3D.Texture;
 import io.github.mibi88.Mibi3D.TexturedModel;
 import io.github.mibi88.Mibi3D.TexturedModelEntity;
@@ -36,8 +35,7 @@ public class Terrain {
     private float step;
     private int w, h;
     
-    public TexturedModelEntity street_lamps[];
-    public int lamp_x_amount, lamp_y_amount;
+    public TexturedModelEntity entities[];
     
     public float[] generate_normals(float x, float y, float z,
             int seed, int w, int h) {
@@ -84,7 +82,8 @@ public class Terrain {
     
     public TexturedModel generate_terrain(int w, int h, float step,
             String texture_file, int seed, int min_lamp_spacing,
-            int max_lamp_spacing, TexturedModel street_lamp, Engine engine)
+            int max_lamp_spacing, int min_tree_spacing, int max_tree_spacing,
+            TexturedModel street_lamp, TexturedModel tree, Engine engine)
             throws Exception {
         w++;
         h++;
@@ -93,9 +92,12 @@ public class Terrain {
         this.step = step;
         vertices = new float[w*h*3];
         heights = new float[w*h];
-        lamp_x_amount = (w*(int)step/max_lamp_spacing);
-        lamp_y_amount = (h*(int)step/max_lamp_spacing);
-        street_lamps = new TexturedModelEntity[lamp_x_amount*lamp_y_amount];
+        int lamp_x_amount = (w*(int)step/max_lamp_spacing);
+        int lamp_y_amount = (h*(int)step/max_lamp_spacing);
+        int tree_x_amount = (w*(int)step/max_tree_spacing);
+        int tree_y_amount = (h*(int)step/max_tree_spacing);
+        entities = new TexturedModelEntity[lamp_x_amount*lamp_y_amount +
+                tree_x_amount*tree_y_amount];
         Random random = new Random(seed);
         float[] texture_coords = new float[w*h*2];
         float[] normals = new float[w*h*3];
@@ -140,6 +142,7 @@ public class Terrain {
         // print_array(indices, "\n");
         
         float x = 0f, y = 0f;
+        int pointer = 0;
         for(int int_y=0;int_y<lamp_y_amount;int_y++) {
             for(int int_x=0;int_x<lamp_x_amount;int_x++) {
                 x = min_lamp_spacing + random.nextFloat() *
@@ -148,8 +151,20 @@ public class Terrain {
                 y = min_lamp_spacing + random.nextFloat() *
                         (max_lamp_spacing-min_lamp_spacing) +
                         int_y*max_lamp_spacing;
-                street_lamps[int_y*lamp_x_amount+int_x] =
-                        engine.create_entity(street_lamp,
+                entities[pointer++] = engine.create_entity(street_lamp,
+                        x, get_height_at_pos(x, y), -y,
+                        0f, 0f, 0f, 1f, 0);
+            }
+        }
+        for(int int_y=0;int_y<tree_y_amount;int_y++) {
+            for(int int_x=0;int_x<tree_x_amount;int_x++) {
+                x = min_tree_spacing + random.nextFloat() *
+                        (max_tree_spacing-min_tree_spacing) +
+                        int_x*max_tree_spacing;
+                y = min_tree_spacing + random.nextFloat() *
+                        (max_tree_spacing-min_tree_spacing) +
+                        int_y*max_tree_spacing;
+                entities[pointer++] = engine.create_entity(tree,
                         x, get_height_at_pos(x, y), -y,
                         0f, 0f, 0f, 1f, 0);
             }
@@ -163,19 +178,13 @@ public class Terrain {
     
     public float get_height_at_pos(float x, float y) {
         x = (w*step)-x;
-        float final_height = 0f;
-        for(int i=0;i<4;i++) {
-            int int_x = (int)(x/step)+((i%2)*2-1),
-                    int_y = (int)(y/step)+(i/2*2-1);
-            int pos = int_y*w+int_x;
-            float height = 0f;
-            if(pos < 0 || pos >= heights.length) {
-                System.out.println("WTF! It's out of bounds!");
-                continue;
-            }
-            height = heights[pos];
-            final_height += height;
+        int int_x = Math.round(x/step), int_y = Math.round(y/step);
+        int pos = int_y*w+int_x;
+        if(pos < 0 || pos >= heights.length) {
+            System.out.println("WTF! It's out of bounds!");
+            return 0f;
         }
-        return final_height/4;
+        float height = heights[pos];
+        return height;
     }
 }
