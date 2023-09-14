@@ -85,19 +85,20 @@ public class MibiFlightSimulator {
                     street_lamp, tree,
                     engine
             );
+            TexturedModelEntity terrain = engine.create_entity(
+                    terrain_model, 1024f*8f/2f, 0f, 0f,
+                    0f, 0f, 0f, 1f,
+                    0
+            );
             
             TexturedModelEntity player = engine.create_entity(plane, 0f,
                     64f, 0f, 0f, 0f, 0f, 1f, 0);
             
             Camera camera = engine.get_camera();
             
-            Plane movement = new Plane(camera);
+            Plane movement = new Plane(camera, terrain_generator,
+                    terrain.x, terrain.z);
             
-            TexturedModelEntity terrain = engine.create_entity(
-                    terrain_model, 1024f*8f/2f, 0f, 0f,
-                    0f, 0f, 0f, 1f,
-                    0
-            );
             TexturedModelEntity sun = engine.create_entity(sun_model,
                     0f, 70f, 0f, 0f, 0f, 0f, 1f,
                     0);

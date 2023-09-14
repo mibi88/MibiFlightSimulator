@@ -26,6 +26,10 @@ import org.joml.Vector3f;
  */
 public class Plane {
     private Camera plane;
+    private Terrain terrain;
+    
+    private float terrain_x, terrain_z;
+    
     float max_speed = 2f, max_speed_mph = 110f;
     float min_fly_speed_mph = 75f;
     float min_fly_speed = min_fly_speed_mph/max_speed_mph;
@@ -52,8 +56,12 @@ public class Plane {
     boolean rot_y = false;
     boolean rot_z = false;
     
-    public Plane(Camera plane) {
+    public Plane(Camera plane, Terrain terrain, float terrain_x,
+            float terrain_z) {
         this.plane = plane;
+        this.terrain = terrain;
+        this.terrain_x = terrain_x;
+        this.terrain_z = terrain_z;
     }
     
     public void speed_up() {
@@ -131,6 +139,13 @@ public class Plane {
         plane.x += direction.x;
         plane.y += direction.y;
         plane.z += direction.z;
+        System.out.println(plane.x);
+        System.out.println(plane.z);
+        float terrain_height = terrain.get_height_at_pos(
+                -plane.x-terrain_x,
+                -plane.z-terrain_z
+        );
+        if(plane.y < terrain_height) plane.y = terrain_height;
         
         got_faster = false;
         

@@ -33,8 +33,8 @@ import org.lwjgl.stb.STBPerlin;
 public class Terrain {
     private float[] vertices;
     private float[] heights;
-    private float step;
-    private int w, h;
+    public float step;
+    public int w, h;
     
     public TexturedModelEntity entities[];
     
@@ -182,15 +182,15 @@ public class Terrain {
         x = (w*step)-x;
         int int_x = (int)(x/step), int_y = (int)(y/step);
         int max_pos = (int_y+1)*w+(int_x+1);
-        if(max_pos < 0 || max_pos >= heights.length) {
+        int min_pos = (int_y-1)*w+(int_x-1);
+        if(min_pos < 0 || max_pos >= heights.length) {
             System.out.println("WTF! It's out of bounds!");
             return 0f;
         }
         float x_pos = (x%step)/step;
         float y_pos = (y%step)/step;
-        System.out.printf("%f, %f\n", x_pos, y_pos);
         float height;
-        if(x_pos > 1f-y_pos) {
+        if(x_pos <= 1f-y_pos) {
             height = Interpolationf.interpolateTriangle(
                     0f, 0f, heights[int_y*w+int_x],
                     1f, 0f, heights[int_y*w+int_x+1],
