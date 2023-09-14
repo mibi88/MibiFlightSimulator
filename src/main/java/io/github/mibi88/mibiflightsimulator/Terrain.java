@@ -22,6 +22,7 @@ import io.github.mibi88.Mibi3D.Texture;
 import io.github.mibi88.Mibi3D.TexturedModel;
 import io.github.mibi88.Mibi3D.TexturedModelEntity;
 import java.util.Random;
+import org.joml.Interpolationf;
 import org.joml.Vector3f;
 import org.lwjgl.stb.STBPerlin;
 
@@ -164,6 +165,7 @@ public class Terrain {
                 y = min_tree_spacing + random.nextFloat() *
                         (max_tree_spacing-min_tree_spacing) +
                         int_y*max_tree_spacing;
+                //
                 entities[pointer++] = engine.create_entity(tree,
                         x, get_height_at_pos(x, y), -y,
                         0f, 0f, 0f, 1f, 0);
@@ -178,13 +180,31 @@ public class Terrain {
     
     public float get_height_at_pos(float x, float y) {
         x = (w*step)-x;
-        int int_x = Math.round(x/step), int_y = Math.round(y/step);
-        int pos = int_y*w+int_x;
-        if(pos < 0 || pos >= heights.length) {
+        int int_x = (int)(x/step), int_y = (int)(y/step);
+        int max_pos = (int_y+1)*w+(int_x+1);
+        if(max_pos < 0 || max_pos >= heights.length) {
             System.out.println("WTF! It's out of bounds!");
             return 0f;
         }
-        float height = heights[pos];
+        float x_pos = (x%step)/step;
+        float y_pos = (y%step)/step;
+        System.out.printf("%f, %f\n", x_pos, y_pos);
+        float height;
+        if(x_pos > 1f-y_pos) {
+            height = Interpolationf.interpolateTriangle(
+                    0f, 0f, heights[int_y*w+int_x],
+                    1f, 0f, heights[int_y*w+int_x+1],
+                    0f, 1f, heights[(int_y+1)*w+int_x],
+                    x_pos, y_pos
+            );
+        } else {
+            height = Interpolationf.interpolateTriangle(
+                    1f, 0f, heights[int_y*w+int_x+1],
+                    1f, 1f, heights[(int_y+1)*w+int_x+1],
+                    0f, 1f, heights[(int_y+1)*w+int_x],
+                    x_pos, y_pos
+            );
+        }
         return height;
     }
 }
