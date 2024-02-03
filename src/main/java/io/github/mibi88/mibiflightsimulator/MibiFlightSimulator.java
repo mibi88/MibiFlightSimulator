@@ -195,6 +195,8 @@ public class MibiFlightSimulator {
                 player.rx = -camera.rx; // Angle of attack
                 player.ry = -camera.ry;
                 player.rz = camera.rz;
+                
+                engine.show();
             }
             
             engine.destroy();

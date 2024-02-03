@@ -38,6 +38,8 @@ public class Window {
     
     private boolean wireframe;
     
+    Framebuffer framebuffer = null;
+    
     /**
      * Create a new window
      * 
@@ -133,11 +135,14 @@ public class Window {
         
         // I center the viewport and set it to the width or the height depending
         // on which one is the biggest
-        GL30.glViewport((window_size[0]-max_size)/2,
-                (window_size[1]-max_size)/2, max_size, max_size);
+        GL30.glViewport(0, 0, window_size[0], window_size[1]);
         
         max_width = (float)window_size[0]/(float)max_size;
         max_height = (float)window_size[1]/(float)max_size;
+        
+        if(framebuffer != null){
+            framebuffer.update_textures(this);
+        }
     }
     
     /**
@@ -185,5 +190,9 @@ public class Window {
         size[0] = width_buffer.get(0);
         size[1] = height_buffer.get(0);
         return size;
+    }
+    
+    public void set_framebuffer(Framebuffer framebuffer) {
+        this.framebuffer = framebuffer;
     }
 }

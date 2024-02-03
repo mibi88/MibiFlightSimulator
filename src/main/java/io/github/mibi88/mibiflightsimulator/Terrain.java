@@ -47,8 +47,7 @@ public class Terrain {
         Vector3f normal = new Vector3f(height_left-height_right, 64f,
                 height_down-height_up);
         normal.normalize();
-        //return new float[]{normal.x, normal.y, normal.z};
-        return new float[]{0f, 1f, 0f};
+        return new float[]{normal.x, normal.y, normal.z};
     }
     public float get_height(float x, float y, int seed, int w, int h) {
         return STBPerlin.stb_perlin_noise3_seed(x*0.1f,

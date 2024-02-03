@@ -36,6 +36,8 @@ public class Engine {
     
     private final Renderer renderer;
     
+    private final Framebuffer framebuffer;
+    
     private TexturedModel used_model;
     private Image used_image;
     
@@ -120,6 +122,10 @@ public class Engine {
                 "shaders/3D_vertex_shader.vert",
                 "shaders/3D_fragment_shader.frag"
         );
+        
+        framebuffer = new Framebuffer(window);
+        
+        window.set_framebuffer(framebuffer);
         
         shaders_3D.bind_attribute(0, "position");
         shaders_3D.bind_attribute(1, "texture_coords");
@@ -330,7 +336,12 @@ public class Engine {
      * Prepare the engine to render a frame
      */
     public void init() {
-        renderer.init(window, r, g, b);
+        renderer.init(window, r, g, b, framebuffer);
+    }
+    
+    public void show() {
+        framebuffer.unbind_frame_buffer();
+        framebuffer.render();
     }
     
     /**
@@ -465,7 +476,7 @@ public class Engine {
         );
         shaders_3D.load_in_uniform_var(sky_color_location,
                 new Vector3f(r, g, b));
-        renderer.load_scene_settings(camera, ambient_lighting,
+        renderer.load_scene_settings(window, camera, ambient_lighting,
                 ambient_lighting_location, view_matrix_location,
                 shaders_3D);
         for(int i=0;i<MAX_LIGHTS;i++) {
@@ -487,8 +498,7 @@ public class Engine {
                 fog_gradient_location,
                 fog_density_location, fog_location,
                 shaders_3D);
-        renderer.load_projection_matrix(projection_matrix_location,
-                shaders_3D);
+        renderer.load_projection_matrix(projection_matrix_location);
     }
     
     /**

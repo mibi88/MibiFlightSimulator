@@ -145,7 +145,7 @@ public class Plane {
                 -plane.x-terrain_x,
                 -plane.z-terrain_z
         );
-        if(plane.y < terrain_height) plane.y = terrain_height;
+        if(plane.y < terrain_height+10) plane.y = terrain_height+10;
         
         got_faster = false;
         

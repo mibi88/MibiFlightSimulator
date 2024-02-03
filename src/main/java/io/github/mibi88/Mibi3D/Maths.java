@@ -83,7 +83,7 @@ public class Maths {
     public static Matrix4f create_projection_matrix(float fov, float near_plane,
             float far_plane, Window window) {
         int[] window_size = window.get_window_size();
-        float aspect_ratio = window_size[0]/window_size[1];
+        float aspect_ratio = (float)window_size[0]/(float)window_size[1];
         
         Matrix4f projection_matrix = new Matrix4f()
                 .perspective((float)Math.toRadians(fov),

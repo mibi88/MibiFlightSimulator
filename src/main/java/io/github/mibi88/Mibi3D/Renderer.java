@@ -31,6 +31,8 @@ public class Renderer {
     private final float FOV = 70f;
     private final float NEAR_PLANE = 0.1f, FAR_PLANE = 1000f;
     
+    private int projection_matrix_location;
+    
     Matrix4f projection_matrix;
     
     /**
@@ -55,14 +57,9 @@ public class Renderer {
      * 
      * @param projection_matrix_location The location of the uniform variable.
      * Get it by using the Shaders.get_uniform_location method.
-     * @param shaders The shaders to load the matrix as a uniform variable in.
      */
-    public void load_projection_matrix(int projection_matrix_location,
-            Shaders shaders) {
-        shaders.load_in_uniform_var(
-                projection_matrix_location, 
-                projection_matrix
-        );
+    public void load_projection_matrix(int projection_matrix_location) {
+        this.projection_matrix_location = projection_matrix_location;
     }
     
     /**
@@ -145,14 +142,18 @@ public class Renderer {
      * @param r The red component of the sky color
      * @param g The green component of the sky color
      * @param b The blue component of the sky color
+     * @param framebuffer The framebuffer to use for rendering
      */
-    public void init(Window window, float r, float g, float b) {
+    public void init(Window window, float r, float g, float b,
+            Framebuffer framebuffer) {
+        framebuffer.bind_frame_buffer();
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(r, g, b, 1f);
     }
     
     /**
      *
+     * @param window The window the scene will be rendered on.
      * @param camera The camera object to create the view matrix from.
      * @param ambient_lighting The amount of ambient lighting, a float between 0
      * and 1
@@ -164,14 +165,23 @@ public class Renderer {
      * matrix as a uniform variable to the shaders with the
      * Shaders.get_uniform_location method.
      */
-    public void load_scene_settings(Camera camera, float ambient_lighting,
-            int ambient_lighting_location, int view_matrix_location,
-            Shaders shaders) {
+    public void load_scene_settings(Window window, Camera camera,
+            float ambient_lighting, int ambient_lighting_location,
+            int view_matrix_location, Shaders shaders) {
         Matrix4f view_matrix = Maths.create_view_matrix(camera);
         shaders.load_in_uniform_var(view_matrix_location,
                 view_matrix);
         shaders.load_in_uniform_var(ambient_lighting_location,
                 ambient_lighting);
+        projection_matrix = Maths.create_projection_matrix(
+                FOV,
+                NEAR_PLANE, FAR_PLANE,
+                window
+        );
+        shaders.load_in_uniform_var(
+                projection_matrix_location, 
+                projection_matrix
+        );
     }
     
     /**
