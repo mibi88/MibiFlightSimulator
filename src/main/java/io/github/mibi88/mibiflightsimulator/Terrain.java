@@ -183,7 +183,7 @@ public class Terrain {
         int max_pos = (int_y+1)*w+(int_x+1);
         int min_pos = (int_y-1)*w+(int_x-1);
         if(min_pos < 0 || max_pos >= heights.length) {
-            System.out.println("WTF! It's out of bounds!");
+            System.out.println("[TERRAIN] Position out of bounds!");
             return 0f;
         }
         float x_pos = (x%step)/step;

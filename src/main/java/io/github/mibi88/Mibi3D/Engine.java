@@ -33,6 +33,7 @@ public class Engine {
     
     private final Shaders shaders_3D;
     private final Shaders shaders_2D;
+    private final Shaders shaders_framebuffer;
     
     private final Renderer renderer;
     
@@ -116,16 +117,12 @@ public class Engine {
         this.fog = fog;
         
         window = new Window(640, 480, "MibiFlightSimulator",
-                4);
+                0);
             
         shaders_3D = new Shaders(
                 "shaders/3D_vertex_shader.vert",
                 "shaders/3D_fragment_shader.frag"
         );
-        
-        framebuffer = new Framebuffer(window);
-        
-        window.set_framebuffer(framebuffer);
         
         shaders_3D.bind_attribute(0, "position");
         shaders_3D.bind_attribute(1, "texture_coords");
@@ -196,6 +193,17 @@ public class Engine {
         cell_size_location_2D = shaders_2D.get_uniform_location(
                 "cell_size");
         
+        // Framebuffer shader
+        shaders_framebuffer = new Shaders(
+                "shaders/framebuffer_shader.vert",
+                "shaders/framebuffer_shader.frag"
+        );
+        
+        shaders_framebuffer.bind_attribute(0, "position");
+        shaders_framebuffer.bind_attribute(1, "texture_coords");
+        
+        shaders_framebuffer.finish_init();
+        
         renderer = new Renderer(window);
 
         camera = new Camera(0f, 0f, 0f, 0f,  0f, 0f);
@@ -207,6 +215,10 @@ public class Engine {
         image_entities = new LinkedHashMap<>();
         
         lights = new ArrayList<>();
+        
+        framebuffer = new Framebuffer(window);
+        
+        window.set_framebuffer(framebuffer);
     }
     
     /**
@@ -335,12 +347,13 @@ public class Engine {
     /**
      * Prepare the engine to render a frame
      */
-    public void init() {
+    public void init() throws Exception {
         renderer.init(window, r, g, b, framebuffer);
     }
     
     public void show() {
         framebuffer.unbind_frame_buffer();
+        //framebuffer.render_with_shaders(shaders_framebuffer);
         framebuffer.render();
     }
     

@@ -145,7 +145,7 @@ public class Renderer {
      * @param framebuffer The framebuffer to use for rendering
      */
     public void init(Window window, float r, float g, float b,
-            Framebuffer framebuffer) {
+            Framebuffer framebuffer) throws Exception {
         framebuffer.bind_frame_buffer();
         GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
         GL30.glClearColor(r, g, b, 1f);

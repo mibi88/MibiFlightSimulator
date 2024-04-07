@@ -139,8 +139,6 @@ public class Plane {
         plane.x += direction.x;
         plane.y += direction.y;
         plane.z += direction.z;
-        System.out.println(plane.x);
-        System.out.println(plane.z);
         float terrain_height = terrain.get_height_at_pos(
                 -plane.x-terrain_x,
                 -plane.z-terrain_z

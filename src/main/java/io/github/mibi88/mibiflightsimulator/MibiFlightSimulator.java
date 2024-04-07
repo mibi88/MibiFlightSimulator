@@ -128,8 +128,12 @@ public class MibiFlightSimulator {
             for(int i=0;i<terrain_generator.entities.length;i++) {
                 if(terrain_generator.entities[i] != null) {
                     terrain_generator.entities[i].x -= terrain.x;
-                    terrain_generator.entities[i].y += terrain.y;
                     terrain_generator.entities[i].z += terrain.z;
+                    terrain_generator.entities[i].y = terrain_generator
+                            .get_height_at_pos(
+                                    terrain_generator.entities[i].x,
+                                    terrain_generator.entities[i].z
+                            );
 
                     engine.add_entity(terrain_generator.entities[i]);
                 } else {
@@ -149,8 +153,6 @@ public class MibiFlightSimulator {
                 }
                 
                 engine.render_scene();
-                
-                window.update();
                 
                 window.poll_events();
                 
@@ -197,6 +199,7 @@ public class MibiFlightSimulator {
                 player.rz = camera.rz;
                 
                 engine.show();
+                window.update();
             }
             
             engine.destroy();

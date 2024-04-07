@@ -94,7 +94,6 @@ public class Window {
         glfwShowWindow(window_id);
         
         GL30.glEnable(GL30.GL_DEPTH_TEST);
-        GL30.glEnable(GL30.GL_TEXTURE_2D);
         GL30.glEnable(GL30.GL_CULL_FACE);
         GL30.glCullFace(GL30.GL_BACK);
         if(multisample > 1) GL30.glEnable(GL30.GL_MULTISAMPLE);
@@ -141,7 +140,7 @@ public class Window {
         max_height = (float)window_size[1]/(float)max_size;
         
         if(framebuffer != null){
-            framebuffer.update_textures(this);
+            //framebuffer.update_textures(this);
         }
     }
     
