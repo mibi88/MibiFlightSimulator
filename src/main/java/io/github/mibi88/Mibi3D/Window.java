@@ -64,6 +64,8 @@ public class Window {
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL30.GL_TRUE);
@@ -83,6 +85,8 @@ public class Window {
         
         glfwMakeContextCurrent(window_id);
         GL.createCapabilities();
+        
+        GLUtil.setupDebugMessageCallback();
         
         String opengl_version = GL30.glGetString(GL30.GL_VERSION);
         String window_title = String.format("%s (OpenGL %s)", title,
@@ -140,7 +144,7 @@ public class Window {
         max_height = (float)window_size[1]/(float)max_size;
         
         if(framebuffer != null){
-            //framebuffer.update_textures(this);
+            framebuffer.update_textures(this);
         }
     }
     

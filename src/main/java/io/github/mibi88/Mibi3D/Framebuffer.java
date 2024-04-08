@@ -187,10 +187,10 @@ public class Framebuffer extends VAO {
         };
 
         float[] texture_coords = {
-            0f, 0f, // v0
-            0f, 1f, // v1
-            1f, 1f, // v2
-            1f, 0f // v3
+            0f, 1f, // v0
+            0f, 0f, // v1
+            1f, 0f, // v2
+            1f, 1f // v3
         };
         
         load_vertices(vertices);

@@ -200,7 +200,8 @@ public class Engine {
         );
         
         shaders_framebuffer.bind_attribute(0, "position");
-        shaders_framebuffer.bind_attribute(1, "texture_coords");
+        shaders_framebuffer.bind_attribute(1,
+                "texture_coords");
         
         shaders_framebuffer.finish_init();
         
@@ -352,9 +353,10 @@ public class Engine {
     }
     
     public void show() {
+        shaders_framebuffer.start();
         framebuffer.unbind_frame_buffer();
-        //framebuffer.render_with_shaders(shaders_framebuffer);
-        framebuffer.render();
+        framebuffer.render_with_shaders(shaders_framebuffer);
+        //framebuffer.render();
     }
     
     /**
