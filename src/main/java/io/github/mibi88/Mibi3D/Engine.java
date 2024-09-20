@@ -353,9 +353,16 @@ public class Engine {
     }
     
     public void show() {
+        boolean in_wireframe = window.wireframe;
         shaders_framebuffer.start();
         framebuffer.unbind_frame_buffer();
+        if(in_wireframe){
+            window.toggle_wireframe();
+        }
         framebuffer.render_with_shaders(shaders_framebuffer);
+        if(in_wireframe){
+            window.toggle_wireframe();
+        }
         //framebuffer.render();
     }
     

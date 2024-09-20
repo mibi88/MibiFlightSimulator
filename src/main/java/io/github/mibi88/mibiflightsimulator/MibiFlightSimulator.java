@@ -116,7 +116,7 @@ public class MibiFlightSimulator {
             engine.set_camera_pos(0f, 64f, 0f, 0f, 0f, 0f);
             
             Keyboard keyboard = new Keyboard(window);
-            Light sun_light = new Light(0f, 64f, 0f, 1f, 1f, 1f);
+            Light sun_light = new Light(0f, 64f, 0f, 2f, 2f, 2f);
             
             engine.add_light(sun_light);
             

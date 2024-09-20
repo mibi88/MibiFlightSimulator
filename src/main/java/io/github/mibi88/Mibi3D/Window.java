@@ -36,7 +36,7 @@ public class Window {
     
     protected float max_width, max_height;
     
-    private boolean wireframe;
+    protected boolean wireframe;
     
     Framebuffer framebuffer = null;
     

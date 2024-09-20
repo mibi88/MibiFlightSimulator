@@ -31,6 +31,7 @@ public class Framebuffer extends VAO {
     protected int frame_buffer;
     protected int color_texture_id, depth_texture_id;
     protected int width, height;
+    private int FORMAT = GL30.GL_RGB16F;
     
     public Framebuffer(Window window)
             throws Exception {
@@ -72,7 +73,7 @@ public class Framebuffer extends VAO {
         height = window_size[1];
         
         GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0,
-                GL30.GL_RGB, width, height,
+                FORMAT, width, height,
                 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE,
                 (ByteBuffer)null);
         
@@ -110,7 +111,7 @@ public class Framebuffer extends VAO {
         height = window_size[1];
         
         GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0,
-                GL30.GL_RGB, width, height,
+                FORMAT, width, height,
                 0, GL30.GL_RGB, GL30.GL_UNSIGNED_BYTE,
                 (ByteBuffer)null);
         

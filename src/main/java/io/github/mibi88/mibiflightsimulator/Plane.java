@@ -140,7 +140,7 @@ public class Plane {
         plane.y += direction.y;
         plane.z += direction.z;
         float terrain_height = terrain.get_height_at_pos(
-                -plane.x-terrain_x,
+                plane.x-terrain_x,
                 -plane.z-terrain_z
         );
         if(plane.y < terrain_height+10) plane.y = terrain_height+10;
