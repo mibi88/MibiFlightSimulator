@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.stream.Collectors;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
@@ -88,6 +89,17 @@ public class Shaders {
      */
     public void load_in_uniform_var(int location, float item) {
         GL30.glUniform1f(location, item);
+    }
+    
+    /**
+     * Load a value in an uniform variable
+     * 
+     * @param location The location of the uniform variable (get it using
+     * get_uniform_location)
+     * @param item The Vector2f to load to the uniform variable
+     */
+    public void load_in_uniform_var(int location, Vector2f item) {
+        GL30.glUniform2f(location, item.x, item.y);
     }
     
     /**

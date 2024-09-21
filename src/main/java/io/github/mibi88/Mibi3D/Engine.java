@@ -19,6 +19,7 @@ package io.github.mibi88.Mibi3D;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL30;
 
@@ -77,6 +78,8 @@ public class Engine {
     int texture_x_location_2D;
     int texture_y_location_2D;
     int cell_size_location_2D;
+    
+    int framebuffer_size_location;
     
     float r;
     float g;
@@ -204,6 +207,9 @@ public class Engine {
                 "texture_coords");
         
         shaders_framebuffer.finish_init();
+        
+        framebuffer_size_location = shaders_framebuffer.get_uniform_location(
+                "tex_size");
         
         renderer = new Renderer(window);
 
@@ -354,11 +360,15 @@ public class Engine {
     
     public void show() {
         boolean in_wireframe = window.wireframe;
+        int[] size = window.get_window_size();
         shaders_framebuffer.start();
         framebuffer.unbind_frame_buffer();
         if(in_wireframe){
             window.toggle_wireframe();
         }
+        shaders_framebuffer.load_in_uniform_var(
+                framebuffer_size_location, new Vector2f(size[0],
+                        size[1]));
         framebuffer.render_with_shaders(shaders_framebuffer);
         if(in_wireframe){
             window.toggle_wireframe();
